@@ -1,40 +1,45 @@
 {
-    "FleaPrice": 100000,
-    "MaxRepairResource": 5,
-    "Traders": [
+  "FleaPrice": 100000,
+  "MaxRepairResource": 5,
+  "Traders": [
+    {
+      "Name": "Mechanic",
+      "Enabled": true,
+      "Price": 100000,
+      "LoyaltyLevel": 2,
+      "BuyLimit": 5,
+      "Stock": 5
+    },
+    {
+      "Name": "Prapor",
+      "Enabled": false,
+      "Price": 100000,
+      "LoyaltyLevel": 1,
+      "BuyLimit": 50,
+      "Stock": 2000
+    }
+  ],
+  "Crafts": [
+    {
+      "Enabled": true,
+	  "CraftTime": 1200,
+      "Requirements": [
         {
-            "Name": "Mechanic",
-			"Enabled": true,
-			"Price": 100000,
-            "LoyaltyLevel": 2,
-            "BuyLimit": 5,
-            "Stock": 5
+          "type": "Tool",
+          "templateId": "544fb5454bdc2df8738b456a"
         },
         {
-            "Name": "Prapor",
-			"Enabled": false,
-			"Price": 100000,
-            "LoyaltyLevel": 1,
-            "BuyLimit": 50,
-            "Stock": 2000
+          "type": "Item",
+          "templateId": "5d1c819a86f774771b0acd6c",
+          "isFunctional": false,
+          "count": 1
+        },
+        {
+          "type": "Area",
+          "areaType": 10,
+          "requiredLevel": 1
         }
-    ],
-	"CraftTime": 1200,
-    "Requirements": [
-        {
-            "type": "Tool",
-            "templateId": "544fb5454bdc2df8738b456a"
-        },
-        {
-            "type": "Item",
-            "templateId": "5d1c819a86f774771b0acd6c",
-            "isFunctional": false,
-            "count": 1
-        },
-        {
-            "type": "Area",
-            "areaType": 10,
-            "requiredLevel": 1
-        }
-    ]
+      ]
+    }
+  ]
 }

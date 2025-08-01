@@ -1,3 +1,5 @@
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using SPTarkov.Common.Extensions;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
@@ -7,6 +9,7 @@ using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Utils;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace _RepairMaxDurability;
@@ -16,7 +19,8 @@ public class AssortInjector(
     DatabaseService            db,
     TraderStore                store,
     GetTraderConfig            config,
-    ISptLogger<AssortInjector> logger) {
+    ISptLogger<AssortInjector> logger,
+    HttpResponseUtil           httpResponseUtil) {
     public void InjectAssort(MongoId itemId, MongoId assortId) {
         var count = 0;
 
@@ -68,9 +72,8 @@ public class AssortInjector(
     }
 
     private void LogResult(TraderConfig.TraderStruct t) {
-        var result = "";
-
-        foreach (KeyValuePair<string, object?> item in t.GetAllPropsAsDict()) result += item + ", ";
-        logger.Debug($"Added assort: {result}");
+        var result = JsonSerializer.Deserialize<JsonNode>(httpResponseUtil.GetBody(t))!["data"]!
+                                   .ToString();
+        logger.Debug($"{result}");
     }
 }

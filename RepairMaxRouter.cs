@@ -1,24 +1,24 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
+using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
-using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
+using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace _RepairMaxDurability;
 
 [Injectable]
 public class RepairMaxRouter : StaticRouter {
     public RepairMaxRouter(JsonUtil jsonUtil, RepairMaxCallback repairMaxCallback) : base(jsonUtil,
-        // Add an array of routes we want to add
-        [
-            new RouteAction("/maxdura/checkdragged",
-                            async (url, info, sessionId, _) =>
-                                await repairMaxCallback.CheckRepair(url, (info as RepairInfo)!, sessionId),
-                            typeof(RepairInfo))
-        ]) { }
+    [
+        new RouteAction("/maxdura/checkdragged",
+                        async (url, info, sessionId, _) =>
+                            await repairMaxCallback.CheckRepair(url, (info as RepairInfo)!, sessionId),
+                        typeof(RepairInfo))
+    ]) { }
 }
 
 [Injectable]
@@ -30,41 +30,34 @@ public class RepairMaxCallback(HttpResponseUtil httpResponseUtil, RepairMaxContr
 
 [Injectable]
 public class RepairMaxController(
-    SaveServer                      saveServer,
+    ProfileHelper                   profileHelper,
     GetTraderConfig                 config,
     ISptLogger<RepairMaxController> logger) {
     public List<Item> CheckRepair(RepairInfo info, MongoId sessionId) {
         // get values from our client
-        MongoId id    = info.ItemId;
-        MongoId kitId = info.KitId;
+        MongoId itemId = info.ItemId;
+        MongoId kitId  = info.KitId;
 
         // grab profile inventory
-        SptProfile? profile = saveServer.GetProfile(sessionId);
-        if (profile?.CharacterData == null)
-            throw new Exception($"Unable to find character data for id: {sessionId}. Profile may be corrupt.");
-
-        BotBaseInventory? inventory = profile.CharacterData?.PmcData?.Inventory;
+        PmcData?          pmcData   = profileHelper.GetPmcProfile(sessionId);
+        BotBaseInventory? inventory = pmcData?.Inventory;
         if (inventory?.Items == null)
             throw new Exception($"Unable to find pmc inventory data for id: {sessionId}. Profile may be corrupt.");
 
         // lookup
-        Item itemToRepair = inventory.Items.Find((x) => x.Id == id) ??
-                             throw new Exception("Item to repair not found in server.");
+        Item itemToRepair = inventory.Items.Find((x) => x.Id == itemId) ??
+                            throw new Exception($"Item {itemId} not found in inventory.");
         Item repairKit = inventory.Items.Find((x) => x.Id == kitId) ??
-                         throw new Exception("Repair kit not found in server.");
+                         throw new Exception($"Repair kit {kitId} not found in inventory.");
 
         if (itemToRepair.Upd?.Repairable == null) throw new Exception($"Item {itemToRepair.Id} is not repairable.");
 
-        const double itemMaxDurability        = 100;
-        double?      itemCurrentMaxDurability = itemToRepair.Upd.Repairable.MaxDurability;
-
-        // set new values
-        double? amountToRepair          = itemMaxDurability        - itemCurrentMaxDurability;
-        double? newCurrentMaxDurability = itemCurrentMaxDurability + amountToRepair;
-
+        double? amountToRepair = 100 - itemToRepair.Upd.Repairable.MaxDurability;
         // update our item
-        itemToRepair.Upd.Repairable.Durability    = newCurrentMaxDurability;
-        itemToRepair.Upd.Repairable.MaxDurability = newCurrentMaxDurability;
+        itemToRepair.Upd.Repairable.Durability = itemToRepair.Upd.Repairable.MaxDurability = 100;
+
+        if (logger.IsLogEnabled(LogLevel.Debug))
+            logger.Debug($"Repaired {itemToRepair.Id} by {amountToRepair} points.");
 
         // check if repair kit was crafted
         // for some reason crafted kits don't contain a "RepairKit" component in upd

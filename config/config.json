@@ -1,25 +1,25 @@
 {
-    "Price": 100000,
+    "FleaPrice": 100000,
     "MaxRepairResource": 5,
-    "CraftTime": 1200,
     "Traders": [
         {
-            "_info": "name is case sensitive ie. Prapor, Peacekeeper, etc.",
-            "enabled": true,
-            "name": "Mechanic",
-            "loyaltyLevel": 2,
-            "buyLimit": 5,
-            "stock": 5
+            "Name": "Mechanic",
+			"Enabled": true,
+			"Price": 100000,
+            "LoyaltyLevel": 2,
+            "BuyLimit": 5,
+            "Stock": 5
         },
         {
-            "_info": "example - it is possible to have multiple traders, just set 'enabled' to true",
-            "enabled": false,
-            "name": "Prapor",
-            "loyaltyLevel": 1,
-            "buyLimit": 50,
-            "stock": 2000
+            "Name": "Prapor",
+			"Enabled": false,
+			"Price": 100000,
+            "LoyaltyLevel": 1,
+            "BuyLimit": 50,
+            "Stock": 2000
         }
     ],
+	"CraftTime": 1200,
     "Requirements": [
         {
             "type": "Tool",

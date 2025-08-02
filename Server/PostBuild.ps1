@@ -1,6 +1,20 @@
+param (
+    [string]$Configuration
+)
+
 $scriptDir = $PSScriptRoot
-$modOutput = Join-Path $scriptDir 'bin\Debug'
-$sptPath = Join-Path (Get-Item $scriptDir).Parent.FullName 'server-csharp\SPTarkov.Server\bin\Debug\net9.0'
+
+# Determine mod output path based on build configuration
+switch ($Configuration) {
+    'Debug'   { $modOutput = Join-Path $scriptDir 'bin\Debug' }
+    'Release' { $modOutput = Join-Path $scriptDir 'bin\Release' }
+    default   {
+        Write-Host "Unknown configuration: $Configuration"
+        exit 1
+    }
+}
+
+$sptPath = Join-Path (Get-Item $scriptDir).Parent.Parent.FullName "server-csharp\SPTarkov.Server\bin\$Configuration\net9.0"
 $sptUserModsPath = Join-Path $sptPath 'user/mods'
 
 # Ensure target directory exists

@@ -16,7 +16,15 @@
   <ItemGroup>
     <PackageReference Include="SPTarkov.Common" Version="4.0.0-prerelease26" />
     <PackageReference Include="SPTarkov.DI" Version="4.0.0-prerelease26" />
-    <PackageReference Include="SPTarkov.Server.Core" Version="4.0.0-prerelease26" />
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(Configuration)' == 'Release'">
+	<PackageReference Include="SPTarkov.Server.Core" Version="4.0.0-prerelease26" />
+  </ItemGroup>
+  
+  <!-- Allow go to declaration using project source instead of decompiled source -->
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+    <ProjectReference Include="..\..\server-csharp\Libraries\SPTarkov.Server.Core\SPTarkov.Server.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,7 +32,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="PowerShell.exe -ExecutionPolicy RemoteSigned -File PostBuild.ps1" />
+    <Exec Command="PowerShell.exe -ExecutionPolicy Bypass -File &quot;$(ProjectDir)\PostBuild.ps1&quot; -Configuration &quot;$(ConfigurationName)&quot;" />
   </Target>
 
 </Project>

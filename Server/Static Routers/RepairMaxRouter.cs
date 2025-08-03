@@ -87,6 +87,6 @@ public class RepairMaxController(
 }
 
 public record RepairInfo : IRequestData {
-    public required Item Item { get; init; }
-    public required Item Kit  { get; init; }
+    public required MongoId ItemId { get; init; }
+    public required MongoId KitId  { get; init; }
 }

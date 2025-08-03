@@ -86,31 +86,27 @@ public class RepairMaxDurabilityPatch : ModulePatch {
 
         // if code runs to here, then we satisfied all conditions to start the repair process
 
-        var info = new RepairInfo() // setup json to send to server
-        {
-            Item = targetItem, Kit = dragItemContext.Item
-        };
+        // setup json to send to server
+        var info = new RepairInfo { ItemId = targetItem.Id, KitId = dragItemContext.Item.Id };
+        // get data back from server
+        ParseProfile.Profile result =
+            Post<ParseProfile.Profile>("/maxdura/checkdragged", JsonConvert.SerializeObject(info));
 
-        var prof = new ParseProfile(Post("/maxdura/checkdragged",
-                                         JsonConvert.SerializeObject(info))); // instantiate our profile parsing class
-        bool updated = prof.UpdateValues(repairableComponent,
-                                         dragItemContext.Item); // set durability and repair kit resource
-        string status = updated ? "REPAIR SUCCESSFUL" : "REPAIR FAILED: JSON ERROR";
+        // set durability and repair kit resource
 
-        if (updated) // success
-        {
+        try {
+            ParseProfile.UpdateValues(result, repairableComponent, dragItemContext.Item);
             // sound and notification
             Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.RepairComplete);
             NotificationManagerClass.DisplayMessageNotification(string.Format("{0} {1:F1}",
                                                                               "Weapon successfully repaired to"
                                                                                   .Localized(),
                                                                               repairableComponent.MaxDurability));
-            log.LogInfo(status);
+            Plugin.Log.LogInfo("REPAIR SUCCESSFUL");
         }
-        else // failure for some reason
-        {
+        catch (Exception ex) {
             Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.ErrorMessage);
-            NotificationManagerClass.DisplayMessageNotification("Repair failed: JSON error",
+            NotificationManagerClass.DisplayMessageNotification("Repair failed: Server error",
                                                                 ENotificationDurationType.Default,
                                                                 ENotificationIconType.Alert);
             log.LogError(status);

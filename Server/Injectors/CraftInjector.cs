@@ -46,6 +46,8 @@ public class CraftInjector(
             throw new Exception("Unable to find hideout recipes. Profile may be corrupt.");
 
         foreach (Config.CraftStruct craft in config.Crafts) {
+            if (!craft.Enabled) continue;
+
             HideoutProduction productionItem = CreateCraft(itemId, craftId, craft.Requirements, craft.CraftTime);
 
             hideout.Production.Recipes.Add(productionItem);

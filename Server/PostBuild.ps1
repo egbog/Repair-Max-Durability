@@ -15,7 +15,7 @@ switch ($Configuration) {
 }
 
 $sptPath = Join-Path (Get-Item $scriptDir).Parent.Parent.FullName "server-csharp\SPTarkov.Server\bin\$Configuration\net9.0"
-$sptUserModsPath = Join-Path $sptPath 'user/mods'
+$sptUserModsPath = Join-Path $sptPath "user/mods"
 
 # Ensure target directory exists
 if (-not (Test-Path $sptUserModsPath)) {
@@ -29,6 +29,10 @@ Write-Host "Copying from: $source"
 Write-Host "Copying to:   $sptUserModsPath"
 
 try {
+	if (Test-Path $sptUserModsPath) {
+        Remove-Item "$sptUserModsPath\*" -Recurse -Force -ErrorAction Stop
+    }
+	
     Copy-Item -Path $source -Destination $sptUserModsPath -Recurse -Force -ErrorAction Stop
     Write-Host "Copy completed successfully."
 } catch {

@@ -12,6 +12,8 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
+	<DebugType>Full</DebugType>
+	<Optimize>false</Optimize>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -39,7 +41,7 @@
   </ItemGroup>
   
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy &quot;$(TargetPath)&quot; &quot;C:\Games\SPT 4.0.0\BepInEx\plugins\$(TargetFileName)&quot;" />
+    <Exec Command="PowerShell.exe -ExecutionPolicy Bypass -File &quot;$(ProjectDir)\PostBuild.ps1&quot; -Configuration &quot;$(ConfigurationName)&quot; -Framework &quot;$(TargetFramework)&quot;" />
   </Target>
 
 </Project>

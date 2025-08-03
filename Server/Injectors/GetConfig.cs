@@ -18,24 +18,24 @@ public class GetConfig(ModHelper modHelper) {
     public List<Config.CraftStruct>  Crafts            { get => Config.Crafts; }
 }
 
-public class Config {
-    public class TraderStruct {
-        public required string Name         { get; set; }
-        public required bool   Enabled      { get; set; }
-        public required int    Price        { get; set; }
-        public required int    LoyaltyLevel { get; set; }
-        public required int    BuyLimit     { get; set; }
-        public required int    Stock        { get; set; }
+public record Config {
+    public record TraderStruct {
+        public required string Name         { get; init; }
+        public required bool   Enabled      { get; init; }
+        public required int    Price        { get; init; }
+        public required int    LoyaltyLevel { get; init; }
+        public required int    BuyLimit     { get; init; }
+        public required int    Stock        { get; init; }
     }
 
-    public class CraftStruct {
-        public required bool              Enabled      { get; set; }
-        public required int               CraftTime    { get; set; }
-        public required List<Requirement> Requirements { get; set; }
+    public record CraftStruct {
+        public required bool              Enabled      { get; init; }
+        public required int               CraftTime    { get; init; }
+        public required List<Requirement> Requirements { get; init; }
     }
 
-    public required int                FleaPrice         { get; set; }
-    public required int                MaxRepairResource { get; set; }
-    public required List<TraderStruct> Traders           { get; set; }
-    public required List<CraftStruct>  Crafts            { get; set; }
+    public required int                FleaPrice         { get; init; }
+    public required int                MaxRepairResource { get; init; }
+    public required List<TraderStruct> Traders           { get; init; }
+    public required List<CraftStruct>  Crafts            { get; init; }
 }

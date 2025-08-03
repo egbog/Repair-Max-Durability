@@ -1,13 +1,13 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using _RepairMaxDurability.Utils;
-using BepInEx.Logging;
 using Comfort.Common;
+using EFT;
 using EFT.Communications;
 using EFT.InventoryLogic;
 using EFT.UI;
 using EFT.UI.DragAndDrop;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using SPT.Common.Http;
 using SPT.Reflection.Patching;
 using UnityEngine;
@@ -17,12 +17,12 @@ namespace _RepairMaxDurability.Patches;
 
 public class RepairMaxDurabilityPatch : ModulePatch {
     public class RepairInfo {
-        public Item Item { get; set; }
-        public Item Kit  { get; set; }
+        public MongoID ItemId { get; set; }
+        public MongoID KitId  { get; set; }
     }
 
-    public static JObject Post(string url, string data) {
-        return JObject.Parse(RequestHandler.PostJson(url, data));
+    public static T Post<T>(string url, string data) {
+        return JsonConvert.DeserializeObject<T>(RequestHandler.PostJson(url, data));
     }
 
     public static bool CheckOwner(Item item) {
@@ -39,16 +39,14 @@ public class RepairMaxDurabilityPatch : ModulePatch {
 
     [PatchPrefix]
     public static bool Prefix(ref ItemContextClass dragItemContext, ref PointerEventData eventData) {
-        ManualLogSource log = BepInEx.Logging.Logger.CreateLogSource("MaxDura");
-
         // make sure item is dragged onto another item, prevent null pointers
-        if (eventData.pointerEnter == null) return false; // return and skip original method
+        if (!eventData?.pointerEnter) return true; // return and skip original method
 
         ItemView                 componentInParent = eventData.pointerEnter.GetComponentInParent<ItemView>();
         ItemContextAbstractClass targetItemContextAbstractClass = componentInParent?.ItemContext;
         Item                     targetItem = targetItemContextAbstractClass?.Item;
 
-        if (targetItem == null) return false; // return and skip original method
+        if (targetItem == null) return true; // return and skip original method
 
         // make sure it's an item that can actually be repaired ie. weapon
         // must contain a RepairableComponent

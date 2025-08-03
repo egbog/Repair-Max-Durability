@@ -35,10 +35,6 @@ public class RepairMaxController(
     GetConfig                       config,
     ISptLogger<RepairMaxController> logger) {
     public List<Item> CheckRepair(RepairInfo info, MongoId sessionId) {
-        // get values from our client
-        //MongoId itemId = info.ItemId;
-        //MongoId kitId  = info.KitId;
-
         // grab profile inventory
         PmcData?          pmcData   = profileHelper.GetPmcProfile(sessionId);
         BotBaseInventory? inventory = pmcData?.Inventory;

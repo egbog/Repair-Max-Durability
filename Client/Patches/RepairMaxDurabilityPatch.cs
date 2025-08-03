@@ -70,7 +70,7 @@ public class RepairMaxDurabilityPatch : ModulePatch {
                                                                 ENotificationDurationType.Default,
                                                                 ENotificationIconType.Alert);
             dragItemContext.DragCancelled();
-            //log.LogInfo("NO REPAIR NECESSARY");
+            //Plugin.Log.LogInfo("NO REPAIR NECESSARY");
             return false;
         }
 
@@ -109,7 +109,7 @@ public class RepairMaxDurabilityPatch : ModulePatch {
             NotificationManagerClass.DisplayMessageNotification("Repair failed: Server error",
                                                                 ENotificationDurationType.Default,
                                                                 ENotificationIconType.Alert);
-            log.LogError(status);
+            Plugin.Log.LogError(ex.Message);
         }
 
         // whether repair fails or completes

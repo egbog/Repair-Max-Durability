@@ -41,10 +41,10 @@ public class RepairMaxController(
         if (inventory?.Items == null)
             throw new Exception($"Unable to find pmc inventory data for id: {sessionId}. Profile may be corrupt.");
 
-        Item itemToRepair = inventory.Items.Find((x) => info.Item == x) ??
-                            throw new Exception($"Item {info.Item.Id} not found in inventory.");
-        Item repairKit = inventory.Items.Find((x) => info.Kit == x) ??
-                         throw new Exception($"Repair kit {info.Kit.Id} not found in inventory.");
+        Item itemToRepair = inventory.Items.Find((x) => info.ItemId == x.Id) ??
+                            throw new Exception($"Item {info.ItemId} not found in inventory.");
+        Item repairKit = inventory.Items.Find((x) => info.KitId == x.Id) ??
+                         throw new Exception($"Repair kit {info.KitId} not found in inventory.");
 
         // lookup
         //Item itemToRepair = inventory.Items.Find((x) => x.Id == itemId) ??

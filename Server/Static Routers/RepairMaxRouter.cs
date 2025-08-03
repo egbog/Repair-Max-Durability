@@ -17,7 +17,7 @@ public class RepairMaxRouter : StaticRouter {
     [
         new RouteAction("/maxdura/checkdragged",
                         async (url, info, sessionId, _) =>
-                            await repairMaxCallback.CheckRepair(url, (info as RepairInfo)!, sessionId),
+                            await repairMaxCallback.CheckRepair(url, info as RepairInfo, sessionId),
                         typeof(RepairInfo))
     ]) { }
 }

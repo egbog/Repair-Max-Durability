@@ -50,9 +50,9 @@ public class RepairMaxDurabilityPatch : ModulePatch {
 
         // make sure it's an item that can actually be repaired ie. weapon
         // must contain a RepairableComponent
-        targetItem.TryGetItemComponent<RepairableComponent>(out RepairableComponent repairableComponent);
+        targetItem.TryGetItemComponent(out RepairableComponent repairableComponent);
         // make sure we aren't repairing armor
-        targetItem.TryGetItemComponent<ArmorComponent>(out ArmorComponent armorComponent);
+        targetItem.TryGetItemComponent(out ArmorComponent armorComponent);
 
         if (!(CheckName(dragItemContext.Item) && CheckOwner(targetItem))) return false;
 

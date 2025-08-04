@@ -95,7 +95,7 @@ public class RepairMaxDurabilityPatch : ModulePatch {
             Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.RepairComplete);
             NotificationManagerClass.DisplayMessageNotification($"{"Weapon successfully repaired to"
                 .Localized()} {repairableComponent.MaxDurability:F1}");
-            Plugin.Log.LogInfo("REPAIR SUCCESSFUL");
+            //Plugin.Log.LogInfo("REPAIR SUCCESSFUL");
         }
         catch (Exception ex) {
             Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.ErrorMessage);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Reflection;
 using _RepairMaxDurability.Utils;
 using Comfort.Common;
@@ -21,16 +22,12 @@ public class RepairMaxDurabilityPatch : ModulePatch {
         public MongoID KitId  { get; set; }
     }
 
-    public static T Post<T>(string url, string data) {
+    public static T? Post<T>(string url, string data) {
         return JsonConvert.DeserializeObject<T>(RequestHandler.PostJson(url, data));
     }
 
     public static bool CheckOwner(Item item) {
         return item.Owner.OwnerType == EOwnerType.Profile;
-    }
-
-    public static bool CheckName(Item item) {
-        return item.LocalizedName().Contains("Spare firearm parts");
     }
 
     protected override MethodBase GetTargetMethod() {
@@ -40,26 +37,24 @@ public class RepairMaxDurabilityPatch : ModulePatch {
     [PatchPrefix]
     public static bool Prefix(ref ItemContextClass dragItemContext, ref PointerEventData eventData) {
         // make sure item is dragged onto another item, prevent null pointers
-        if (!eventData?.pointerEnter) return true; // return and run original method
+        if (!eventData.pointerEnter) return true; // return and run original method
 
-        ItemView                 componentInParent = eventData.pointerEnter.GetComponentInParent<ItemView>();
-        ItemContextAbstractClass targetItemContextAbstractClass = componentInParent?.ItemContext;
-        Item                     targetItem = targetItemContextAbstractClass?.Item;
+        ItemView?                 componentInParent = eventData.pointerEnter.GetComponentInParent<ItemView>();
+        ItemContextAbstractClass? targetItemContextAbstractClass = componentInParent?.ItemContext;
+        Item?                     targetItem = targetItemContextAbstractClass?.Item;
 
-        if (targetItem == null) return true; // return and run original method
+        // check target item ownership
+        if (targetItem == null || !CheckOwner(targetItem)) return true;
 
+        // make sure the item being dragged is the repair kit
         // only repair Weapon types
-        if (ItemViewFactory.GetItemType(targetItem.GetType()) != EItemType.Weapon)
+        if (dragItemContext.Item.TemplateId                   != "86afd148ac929e6eddc5e370" ||
+            ItemViewFactory.GetItemType(targetItem.GetType()) != EItemType.Weapon)
             return true;
 
         // must contain a RepairableComponent
         if (!targetItem.TryGetItemComponent(out RepairableComponent repairableComponent)) return true;
 
-        // check target item ownership
-        if (!(CheckName(dragItemContext.Item) && CheckOwner(targetItem))) return false;
-
-        // only do work when our item is dragged AND dragged onto another item
-        // make sure the item being dragged is the repair kit
         // check if the durability is below 100
         // set isRepairable to true if it is below 100
         if (Mathf.Approximately(repairableComponent.MaxDurability, 100f)) // item already at 100 max durability
@@ -80,6 +75,7 @@ public class RepairMaxDurabilityPatch : ModulePatch {
                                                                 ENotificationDurationType.Default,
                                                                 ENotificationIconType.Alert);
             dragItemContext.DragCancelled();
+            //Plugin.Log.LogInfo("WEAPON NOT REPAIRED ENOUGH");
             return false;
         }
 
@@ -87,20 +83,18 @@ public class RepairMaxDurabilityPatch : ModulePatch {
 
         // setup json to send to server
         var info = new RepairInfo { ItemId = targetItem.Id, KitId = dragItemContext.Item.Id };
+
         // get data back from server
-        ParseProfile.Profile result =
+        ParseProfile.Profile? result =
             Post<ParseProfile.Profile>("/maxdura/checkdragged", JsonConvert.SerializeObject(info));
 
         // set durability and repair kit resource
-
         try {
             ParseProfile.UpdateValues(result, repairableComponent, dragItemContext.Item);
             // sound and notification
             Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.RepairComplete);
-            NotificationManagerClass.DisplayMessageNotification(string.Format("{0} {1:F1}",
-                                                                              "Weapon successfully repaired to"
-                                                                                  .Localized(),
-                                                                              repairableComponent.MaxDurability));
+            NotificationManagerClass.DisplayMessageNotification($"{"Weapon successfully repaired to"
+                .Localized()} {repairableComponent.MaxDurability:F1}");
             Plugin.Log.LogInfo("REPAIR SUCCESSFUL");
         }
         catch (Exception ex) {

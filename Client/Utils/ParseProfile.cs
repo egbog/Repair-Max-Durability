@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using EFT;
 using EFT.InventoryLogic;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace _RepairMaxDurability.Utils;
@@ -31,7 +32,9 @@ public class ParseProfile {
         public List<Item> Items { get; set; }
     }
 
-    public static void UpdateValues(Profile profile, RepairableComponent targetItemRc, Item repairKit) {
+    public static void UpdateValues([CanBeNull] Profile profile, RepairableComponent targetItemRc, Item repairKit) {
+        if (profile == null) throw new ArgumentNullException(nameof(profile));
+
         if (profile.Items.Find(i => i._id == targetItemRc.Item.Id) is { } item) {
             targetItemRc.Durability    = item.upd.Repairable.Durability;
             targetItemRc.MaxDurability = item.upd.Repairable.MaxDurability;

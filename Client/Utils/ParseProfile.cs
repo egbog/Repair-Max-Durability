@@ -39,6 +39,7 @@ public class ParseProfile {
             targetItemRc.Durability    = item.upd.Repairable.Durability;
             targetItemRc.MaxDurability = item.upd.Repairable.MaxDurability;
             targetItemRc.Item.UpdateAttributes();
+            targetItemRc.Item.RaiseRefreshEvent(true);
             //this.Log.LogInfo(item.LocalizedName() + " REPAIRED TO: " + repairableComponent.MaxDurability);
         }
         else // something went wrong with json sent from server
@@ -50,6 +51,7 @@ public class ParseProfile {
         if (profile.Items.Find(i => i._id == repairKit.Id) is { } kit) {
             repairKit.TryGetItemComponent(out RepairKitComponent repairKitComponent);
             repairKitComponent.Resource = kit.upd.RepairKit.Resource;
+            repairKit.UpdateAttributes();
             repairKit.RaiseRefreshEvent(true);
             //Plugin.Log.LogDebug("NEW REPAIR RESOURCE: " + rkc.Resource);
 

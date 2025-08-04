@@ -8,12 +8,19 @@
 	<RootNamespace>_RepairMaxDurability</RootNamespace>
 	<LangVersion>latest</LangVersion>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
+    <Configurations>Debug;Release;Source-Debug</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
 	<DebugType>Full</DebugType>
 	<Optimize>false</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Source-Debug|AnyCPU'">
+    <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
+    <DebugType>Full</DebugType>
+    <Optimize>false</Optimize>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -27,8 +34,16 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   
+  <!-- Allow go to declaration using project source instead of decompiled source -->
+  <ItemGroup Condition="'$(Configuration)'=='Source-Debug'">
+    <ProjectReference Include="..\..\Decompiled-SPT4.0.0\Assembly-CSharp\Assembly-CSharp.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(Configuration)'!='Source-Debug'">
+    <Reference Include="Assembly-CSharp" />
+  </ItemGroup>
+  
   <ItemGroup>
-	<Reference Include="Assembly-CSharp" />
 	<Reference Include="BepInEx" />
     <Reference Include="Comfort" />
     <Reference Include="UnityEngine" />

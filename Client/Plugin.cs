@@ -23,7 +23,8 @@ namespace _RepairMaxDurability {
             Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
 
             new RepairMaxDurabilityPatch().Enable();
-            new RepairWindowPatch().Enable();
+            new ShowRepairWindowPatch().Enable();
+            new RepairerParametersPanelRefreshPatch().Enable();
         }
     }
 }

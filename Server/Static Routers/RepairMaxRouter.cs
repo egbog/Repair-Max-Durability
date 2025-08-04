@@ -60,7 +60,7 @@ public class RepairMaxController(
         itemToRepair.Upd.Repairable.Durability = itemToRepair.Upd.Repairable.MaxDurability = 100;
 
         if (logger.IsLogEnabled(LogLevel.Debug))
-            logger.Debug($"Repaired {itemToRepair.Id} by {amountToRepair} points.");
+            logger.Debug($"Repaired {itemToRepair.Id} by {amountToRepair:F5} points.");
 
         // check if repair kit was crafted
         // for some reason crafted kits don't contain a "RepairKit" component in upd

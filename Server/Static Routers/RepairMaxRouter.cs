@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using _RepairMaxDurability.Injectors;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
@@ -66,10 +67,10 @@ public class RepairMaxController(
         // so just workaround add it ourselves
         if (repairKit.Upd?.RepairKit?.Resource == null) {
             logger.Warning($"Repair kit {repairKit.Id} is corrupted. Fixing...");
-            repairKit = FixKit(repairKit);
+            repairKit.Upd = new Upd { RepairKit = new UpdRepairKit { Resource = config.MaxRepairResource } };
         }
 
-        repairKit.Upd!.RepairKit!.Resource--;
+        repairKit.Upd.RepairKit.Resource--;
 
         // it appears that calling TraderControllerClass.DestroyItem() clientside will trigger /client/game/profile/items/moving
         // event: Remove
@@ -78,11 +79,6 @@ public class RepairMaxController(
 
         // organize our items into a parent "Items" so we can use JToken.First and JToken.Next client-side
         return [itemToRepair, repairKit];
-    }
-
-    private Item FixKit(Item kit) {
-        kit.Upd = new Upd { RepairKit = new UpdRepairKit { Resource = config.MaxRepairResource } };
-        return kit;
     }
 }
 

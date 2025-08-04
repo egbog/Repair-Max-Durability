@@ -40,24 +40,23 @@ public class RepairMaxDurabilityPatch : ModulePatch {
     [PatchPrefix]
     public static bool Prefix(ref ItemContextClass dragItemContext, ref PointerEventData eventData) {
         // make sure item is dragged onto another item, prevent null pointers
-        if (!eventData?.pointerEnter) return true; // return and skip original method
+        if (!eventData?.pointerEnter) return true; // return and run original method
 
         ItemView                 componentInParent = eventData.pointerEnter.GetComponentInParent<ItemView>();
         ItemContextAbstractClass targetItemContextAbstractClass = componentInParent?.ItemContext;
         Item                     targetItem = targetItemContextAbstractClass?.Item;
 
-        if (targetItem == null) return true; // return and skip original method
+        if (targetItem == null) return true; // return and run original method
 
-        // make sure it's an item that can actually be repaired ie. weapon
+        // only repair Weapon types
+        if (ItemViewFactory.GetItemType(targetItem.GetType()) != EItemType.Weapon)
+            return true;
+
         // must contain a RepairableComponent
-        targetItem.TryGetItemComponent(out RepairableComponent repairableComponent);
-        // make sure we aren't repairing armor
-        targetItem.TryGetItemComponent(out ArmorComponent armorComponent);
-
-        if (!(CheckName(dragItemContext.Item) && CheckOwner(targetItem))) return false;
+        if (!targetItem.TryGetItemComponent(out RepairableComponent repairableComponent)) return true;
 
         // check target item ownership
-        if (!(repairableComponent != null && armorComponent == null)) return false;
+        if (!(CheckName(dragItemContext.Item) && CheckOwner(targetItem))) return false;
 
         // only do work when our item is dragged AND dragged onto another item
         // make sure the item being dragged is the repair kit

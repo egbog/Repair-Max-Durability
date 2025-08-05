@@ -4,7 +4,9 @@ param (
 )
 
 $scriptDir = $PSScriptRoot
-$sourceFiles = @("RepairMaxDurabilityClient.dll", "RepairMaxDurabilityClient.pdb")
+$sourceFilesRelease = @("RepairMaxDurabilityClient.dll")
+$sourceFilesDebug = @("RepairMaxDurabilityClient.dll", "RepairMaxDurabilityClient.pdb", "RepairMaxDurabilityClient.dll.mdb")
+$activeSourceFiles
 $sptInstallPath = "C:\Games\SPT 4.0.0"
 $sptClientModsPath = Join-Path $sptInstallPath "BepInEx\plugins"
 $pdb2mdb = Join-Path $scriptDir "pdb2mdb.exe"
@@ -15,18 +17,20 @@ Write-Host ""
 switch ($Configuration) {
     'Debug'   { 
 		$modOutput = Join-Path $scriptDir "bin\Debug\$Framework"
-		$dllPath = Join-Path $modOutput $sourceFiles[0]
+		$dllPath = Join-Path $modOutput $sourceFilesDebug[0]
 		
 		# Convert pdb to mdb
 		Write-Host "Running pdb2mdb on $dllPath..."
 		& $pdb2mdb $dllPath
 		
 		Write-Host "Created *.mdb file using pdb2mdb"
-		$sourceFiles += ($sourceFiles[0] + ".mdb") 
 		Write-Host "----------------------------------------------------------------------------------------------------"
+		
+		$activeSourceFiles = $sourceFilesDebug
 	}
     'Release' { 
-		$modOutput = Join-Path $scriptDir 'bin\Release\$Framework' 
+		$modOutput = Join-Path $scriptDir "bin\Release\$Framework"
+		$activeSourceFiles = $sourceFilesRelease
 	}
     default   {
         Write-Host "Unknown configuration: $Configuration"
@@ -42,15 +46,19 @@ if (-not (Test-Path $sptClientModsPath)) {
 }
 
 try {
-    foreach ($file in $sourceFiles) {
-		$sourceFilePath = Join-Path $modOutput $file
-		$targetFilePath = Join-Path $sptClientModsPath $file
+	# Remove existing target file if it exists
+	foreach ($existingFile in $sourceFilesDebug) {
+		$targetFilePath = Join-Path $sptClientModsPath $existingFile
 		
-		# Remove existing target file if it exists
 		if (Test-Path $targetFilePath) {
 			Write-Host "Deleting existing file: $targetFilePath"
 			Remove-Item $targetFilePath -Force -ErrorAction Stop
 		}
+	}
+	
+    foreach ($file in $activeSourceFiles) {
+		$sourceFilePath = Join-Path $modOutput $file
+		$targetFilePath = Join-Path $sptClientModsPath $file
 		
 		# Copy file if it exists at source
 		if (Test-Path $sourceFilePath) {

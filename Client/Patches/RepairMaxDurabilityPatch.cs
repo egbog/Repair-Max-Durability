@@ -52,7 +52,6 @@ public class RepairMaxDurabilityPatch : ModulePatch {
         if (!targetItem.TryGetItemComponent(out RepairableComponent repairableComponent)) return true;
 
         // check if the durability is below 100
-        // set isRepairable to true if it is below 100
         if (Mathf.Approximately(repairableComponent.MaxDurability, 100f)) // item already at 100 max durability
         {
             Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.ErrorMessage);

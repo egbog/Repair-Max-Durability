@@ -17,8 +17,9 @@ using UnityEngine.EventSystems;
 namespace _RepairMaxDurability.Patches;
 
 public class RepairMaxDurabilityPatch : ModulePatch {
-    public static T? Post<T>(string url, string data) {
-        return JsonConvert.DeserializeObject<T>(RequestHandler.PostJson(url, data));
+    public static T Post<T>(string url, string data) {
+        T response = JsonConvert.DeserializeObject<T>(RequestHandler.PostJson(url, data)) ?? throw new Exception($"gh");
+        return response;
     }
 
     protected override MethodBase GetTargetMethod() {
@@ -75,8 +76,7 @@ public class RepairMaxDurabilityPatch : ModulePatch {
         var info = new RepairDataRequest { ItemId = targetItem.Id, KitId = dragItemContext.Item.Id };
 
         // get data back from server
-        RepairDataResponse? result =
-            Post<RepairDataResponse>("/maxdura/checkdragged", JsonConvert.SerializeObject(info));
+        RepairDataResponse result = Post<RepairDataResponse>("/maxdura/checkdragged", JsonConvert.SerializeObject(info));
 
         // set durability and repair kit resource
         try {

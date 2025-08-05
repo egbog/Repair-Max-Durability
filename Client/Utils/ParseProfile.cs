@@ -7,37 +7,39 @@ using Newtonsoft.Json;
 
 namespace _RepairMaxDurability.Utils;
 
+public record RepairDataResponse {
+    [JsonProperty("data")]
+    public List<Items> Items { get; set; }
+}
+
+public record Items {
+    [JsonProperty("Id")]
+    public MongoID Id { get; set; }
+    [JsonProperty("Upd")]
+    public Upd Upd { get; set; }
+}
+
+public record Upd {
+    public Repairable Repairable { get; set; }
+    public RepairKit  RepairKit  { get; set; }
+}
+
+public record Repairable {
+    public float Durability    { get; set; }
+    public float MaxDurability { get; set; }
+}
+
+public record RepairKit {
+    public int Resource { get; set; }
+}
+
 public class ParseProfile {
-    public record Profile {
-        public record Item {
-            public record Repairable {
-                public float Durability    { get; set; }
-                public float MaxDurability { get; set; }
-            }
+    public static void UpdateValues([CanBeNull] RepairDataResponse repairDataResponse, RepairableComponent targetItemRc, Item repairKit) {
+        if (repairDataResponse == null) throw new ArgumentNullException(nameof(repairDataResponse));
 
-            public record RepairKit {
-                public int Resource { get; set; }
-            }
-
-            public record Upd {
-                public Repairable Repairable { get; set; }
-                public RepairKit  RepairKit  { get; set; }
-            }
-
-            public MongoID _id { get; set; }
-            public Upd     upd { get; set; }
-        }
-
-        [JsonProperty("data")]
-        public List<Item> Items { get; set; }
-    }
-
-    public static void UpdateValues([CanBeNull] Profile profile, RepairableComponent targetItemRc, Item repairKit) {
-        if (profile == null) throw new ArgumentNullException(nameof(profile));
-
-        if (profile.Items.Find(i => i._id == targetItemRc.Item.Id) is { } item) {
-            targetItemRc.Durability    = item.upd.Repairable.Durability;
-            targetItemRc.MaxDurability = item.upd.Repairable.MaxDurability;
+        if (repairDataResponse.Items.Find(i => i.Id == targetItemRc.Item.Id) is { } item) {
+            targetItemRc.Durability    = item.Upd.Repairable.Durability;
+            targetItemRc.MaxDurability = item.Upd.Repairable.MaxDurability;
             targetItemRc.Item.UpdateAttributes();
             targetItemRc.Item.RaiseRefreshEvent(true);
             //this.Log.LogInfo(item.LocalizedName() + " REPAIRED TO: " + repairableComponent.MaxDurability);
@@ -48,9 +50,9 @@ public class ParseProfile {
         }
 
         // update repair kit resource
-        if (profile.Items.Find(i => i._id == repairKit.Id) is { } kit) {
+        if (repairDataResponse.Items.Find(i => i.Id == repairKit.Id) is { } kit) {
             repairKit.TryGetItemComponent(out RepairKitComponent repairKitComponent);
-            repairKitComponent.Resource = kit.upd.RepairKit.Resource;
+            repairKitComponent.Resource = kit.Upd.RepairKit.Resource;
             repairKit.UpdateAttributes();
             repairKit.RaiseRefreshEvent(true);
             //Plugin.Log.LogDebug("NEW REPAIR RESOURCE: " + rkc.Resource);

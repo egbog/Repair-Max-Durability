@@ -80,8 +80,8 @@ public class RepairMaxDurabilityPatch : ModulePatch {
         var info = new RepairDataRequest { ItemId = targetItem.Id, KitId = dragItemContext.Item.Id };
 
         // get data back from server
-        ParseProfile.Profile? result =
-            Post<ParseProfile.Profile>("/maxdura/checkdragged", JsonConvert.SerializeObject(info));
+        RepairDataResponse? result =
+            Post<RepairDataResponse>("/maxdura/checkdragged", JsonConvert.SerializeObject(info));
 
         // set durability and repair kit resource
         try {

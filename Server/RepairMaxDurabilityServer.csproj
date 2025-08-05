@@ -27,6 +27,8 @@
 
   <ItemGroup>
     <Folder Include="Logger\" />
+    <Folder Include="Controllers\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

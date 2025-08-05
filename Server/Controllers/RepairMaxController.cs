@@ -23,7 +23,6 @@ public class RepairMaxController(
         // Add skill points for repairing items
         repairService.AddRepairSkillPoints(sessionId, repairDetails, pmcData);
 
-        // organize our items into a parent "Items" so we can use JToken.First and JToken.Next client-side
         return [repairDetails.RepairedItem, repairKit];
     }
 }

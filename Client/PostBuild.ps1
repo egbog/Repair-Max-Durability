@@ -62,10 +62,8 @@ try {
 		
 		# Copy file if it exists at source
 		if (Test-Path $sourceFilePath) {
-			Write-Host "Copying file from:"
-            Write-Host "  $sourceFilePath"
-            Write-Host "to:"
-            Write-Host "  $targetFilePath"
+			Write-Host "Copying file from: $sourceFilePath"
+            Write-Host "to:  $targetFilePath"
 			Write-Host ""
 			Copy-Item -Path $sourceFilePath -Destination $sptClientModsPath -Force -ErrorAction Stop
 		} else {

@@ -1,4 +1,5 @@
 ﻿using System;
+using _RepairMaxDurability.ServerJsonStructures;
 using EFT.InventoryLogic;
 using JetBrains.Annotations;
 

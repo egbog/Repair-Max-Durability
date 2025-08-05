@@ -2,7 +2,7 @@
 using EFT;
 using Newtonsoft.Json;
 
-namespace _RepairMaxDurability;
+namespace _RepairMaxDurability.ServerJsonStructures;
 
 public record RepairDataResponse {
     [JsonProperty("data")]

@@ -1,9 +1,9 @@
 ﻿#nullable enable
 using System;
 using System.Reflection;
+using _RepairMaxDurability.ServerJsonStructures;
 using _RepairMaxDurability.Utils;
 using Comfort.Common;
-using EFT;
 using EFT.Communications;
 using EFT.InventoryLogic;
 using EFT.UI;
@@ -15,11 +15,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace _RepairMaxDurability.Patches;
-
-public class RepairDataRequest {
-    public MongoID ItemId { get; set; }
-    public MongoID KitId  { get; set; }
-}
 
 public class RepairMaxDurabilityPatch : ModulePatch {
     public static T? Post<T>(string url, string data) {

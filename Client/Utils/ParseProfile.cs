@@ -1,40 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using EFT;
 using EFT.InventoryLogic;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 
 namespace _RepairMaxDurability.Utils;
 
-public record RepairDataResponse {
-    [JsonProperty("data")]
-    public List<Items> Items { get; set; }
-}
-
-public record Items {
-    [JsonProperty("Id")]
-    public MongoID Id { get; set; }
-    [JsonProperty("Upd")]
-    public Upd Upd { get; set; }
-}
-
-public record Upd {
-    public Repairable Repairable { get; set; }
-    public RepairKit  RepairKit  { get; set; }
-}
-
-public record Repairable {
-    public float Durability    { get; set; }
-    public float MaxDurability { get; set; }
-}
-
-public record RepairKit {
-    public int Resource { get; set; }
-}
-
 public class ParseProfile {
-    public static void UpdateValues([CanBeNull] RepairDataResponse repairDataResponse, RepairableComponent targetItemRc, Item repairKit) {
+    public static void UpdateValues([CanBeNull] RepairDataResponse repairDataResponse, RepairableComponent targetItemRc,
+                                    Item                           repairKit) {
         if (repairDataResponse == null) throw new ArgumentNullException(nameof(repairDataResponse));
 
         if (repairDataResponse.Items.Find(i => i.Id == targetItemRc.Item.Id) is { } item) {

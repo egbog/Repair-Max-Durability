@@ -14,24 +14,24 @@ namespace _RepairMaxDurability.Services;
 public class RepairMaxService(DatabaseService db, RepairHelper repairHelper, ISptLogger<RepairMaxService> logger) {
     public (RepairDetails repairDetails, Item repairKit) RepairMaxItemByKit(
         RepairDataRequest dataRequest, MongoId sessionId, PmcData pmcData) {
-        Item? itemToRepair = pmcData.Inventory.Items.FirstOrDefault(x => x.Id == dataRequest.ItemId);
-        if (itemToRepair is null) throw new Exception($"Item {dataRequest.ItemId} not found in inventory.");
+        Item itemToRepair = pmcData.Inventory?.Items?.FirstOrDefault(x => x.Id == dataRequest.ItemId) ??
+                            throw new Exception($"Item {dataRequest.ItemId} not found in inventory.");
 
-        Item? repairKit = pmcData.Inventory.Items.FirstOrDefault(x => x.Id == dataRequest.KitId);
-        if (repairKit is null) throw new Exception($"Repair kit {dataRequest.KitId} not found in inventory.");
+        Item repairKit = pmcData.Inventory?.Items?.FirstOrDefault(x => x.Id == dataRequest.KitId) ??
+                         throw new Exception($"Repair kit {dataRequest.KitId} not found in inventory.");
 
-        if (itemToRepair.Upd?.Repairable == null) throw new Exception($"Item {itemToRepair.Id} is not repairable.");
+        Dictionary<MongoId, TemplateItem> itemsDict             = db.GetItems();
+        TemplateItem                      itemToRepairTemplate  = itemsDict[itemToRepair.Template];
+        TemplateItem                      repairKitTemplateItem = itemsDict[repairKit.Template];
 
-        double       amountToRepair       = 100 - itemToRepair.Upd.Repairable?.MaxDurability ?? 0;
-        TemplateItem itemToRepairTemplate = db.GetItems()[itemToRepair.Template];
+        double amountToRepair = 100 - itemToRepair.Upd?.Repairable?.Durability ?? 0;
         itemToRepair.Upd.Repairable.MaxDurability += amountToRepair;
+
         repairHelper.UpdateItemDurability(itemToRepair, itemToRepairTemplate, false, amountToRepair, true, 1, false);
 
         // check if repair kit was crafted
         // for some reason crafted kits don't contain a "RepairKit" component in upd
         // so just workaround add it ourselves
-        TemplateItem repairKitTemplateItem = db.GetItems()[repairKit.Template];
-
         AddMaxResourceToKitIfMissing(repairKitTemplateItem, repairKit);
 
         repairKit.Upd.RepairKit.Resource--;
@@ -40,9 +40,6 @@ public class RepairMaxService(DatabaseService db, RepairHelper repairHelper, ISp
         // event: Remove
         // and delete our item from the profile for us
         // TraderControllerClass.DestroyItem() was changed to ThrowItem() and TryThrowItem()
-
-        // organize our items into a parent "Items" so we can use JToken.First and JToken.Next client-side
-
         return (
             new RepairDetails {
                 RepairPoints        = amountToRepair,

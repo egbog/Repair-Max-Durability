@@ -2,7 +2,7 @@ This repo is a mod for [sp-tarkov](https://sp-tarkov.com/)
 
 # Repair Max Durability
 
-Durability burn is a neglected feature in live EFT that only serves to artificially increase malfunction frequency. Aside from that, it has no other purpose or remedy.
+Durability burn upon repair is a neglected feature in live EFT that only serves to artificially increase malfunction frequency. Aside from that, it has no other purpose or remedy.
 
 This mod attempts to introduce a lore-friendly alternative to stripping attachments off of uselessly damaged weapons and vendoring the weapon, only to purchase the exact same weapon and put the same attachments on.
 

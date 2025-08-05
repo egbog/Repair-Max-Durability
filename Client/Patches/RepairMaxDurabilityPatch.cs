@@ -8,8 +8,6 @@ using EFT.Communications;
 using EFT.InventoryLogic;
 using EFT.UI;
 using EFT.UI.DragAndDrop;
-using Newtonsoft.Json;
-using SPT.Common.Http;
 using SPT.Reflection.Patching;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -17,11 +15,6 @@ using UnityEngine.EventSystems;
 namespace _RepairMaxDurability.Patches;
 
 public class RepairMaxDurabilityPatch : ModulePatch {
-    public static T Post<T>(string url, string data) {
-        T response = JsonConvert.DeserializeObject<T>(RequestHandler.PostJson(url, data)) ?? throw new Exception($"gh");
-        return response;
-    }
-
     protected override MethodBase GetTargetMethod() {
         return typeof(ItemView).GetMethod("method_8", BindingFlags.Instance | BindingFlags.Public);
     }
@@ -75,11 +68,12 @@ public class RepairMaxDurabilityPatch : ModulePatch {
         // setup json to send to server
         var info = new RepairDataRequest { ItemId = targetItem.Id, KitId = dragItemContext.Item.Id };
 
-        // get data back from server
-        RepairDataResponse result = Post<RepairDataResponse>("/maxdura/checkdragged", JsonConvert.SerializeObject(info));
-
-        // set durability and repair kit resource
         try {
+            // get data back from server
+            RepairDataResponse result =
+                Requester.SendRequest<RepairDataResponse, RepairDataRequest>("/maxdura/checkdragged", info);
+
+            // set durability and repair kit resource
             ParseProfile.UpdateValues(result, repairableComponent, dragItemContext.Item);
             // sound and notification
             Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.RepairComplete);

@@ -1,4 +1,3 @@
-using _RepairMaxDurability.Injectors;
 using _RepairMaxDurability.Services;
 using _RepairMaxDurability.Static_Routers;
 using SPTarkov.DI.Annotations;
@@ -6,17 +5,13 @@ using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
-using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
-using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 [Injectable]
 public class RepairMaxController(
-    ProfileHelper                   profileHelper,
-    GetConfig                       config,
-    ISptLogger<RepairMaxController> logger,
-    RepairMaxService                repairMaxService,
-    RepairService                   repairService) {
+    ProfileHelper    profileHelper,
+    RepairMaxService repairMaxService,
+    RepairService    repairService) {
     public List<Item> RepairMaxWithKit(RepairDataRequest dataRequest, MongoId sessionId) {
         PmcData? pmcData = profileHelper.GetPmcProfile(sessionId);
 
@@ -28,6 +23,7 @@ public class RepairMaxController(
         // Add skill points for repairing items
         repairService.AddRepairSkillPoints(sessionId, repairDetails, pmcData);
 
+        // organize our items into a parent "Items" so we can use JToken.First and JToken.Next client-side
         return [repairDetails.RepairedItem, repairKit];
     }
 }

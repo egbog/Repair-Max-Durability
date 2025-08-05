@@ -6,10 +6,8 @@ using JetBrains.Annotations;
 namespace _RepairMaxDurability.Utils;
 
 public class ParseProfile {
-    public static void UpdateValues([CanBeNull] RepairDataResponse repairDataResponse, RepairableComponent targetItemRc,
+    public static void UpdateValues(RepairDataResponse repairDataResponse, RepairableComponent targetItemRc,
                                     Item                           repairKit) {
-        if (repairDataResponse == null) throw new ArgumentNullException(nameof(repairDataResponse));
-
         if (repairDataResponse.Items.Find(i => i.Id == targetItemRc.Item.Id) is { } item) {
             targetItemRc.Durability    = item.Upd.Repairable.Durability;
             targetItemRc.MaxDurability = item.Upd.Repairable.MaxDurability;

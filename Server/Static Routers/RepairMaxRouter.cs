@@ -13,12 +13,12 @@ public class RepairMaxRouter : StaticRouter {
     [
         new RouteAction("/maxdura/checkdragged",
                         async (url, info, sessionId, _) =>
-                            await repairMaxCallback.RepairMax(url, info as RepairInfo, sessionId),
-                        typeof(RepairInfo))
+                            await repairMaxCallback.RepairMax(url, info as RepairDataRequest, sessionId),
+                        typeof(RepairDataRequest))
     ]) { }
 }
 
-public record RepairInfo : IRequestData {
+public record RepairDataRequest : IRequestData {
     public required MongoId ItemId { get; init; }
     public required MongoId KitId  { get; init; }
 }

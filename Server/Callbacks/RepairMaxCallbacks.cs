@@ -7,8 +7,8 @@ namespace _RepairMaxDurability.Callbacks;
 
 [Injectable]
 public class RepairMaxCallback(HttpResponseUtil httpResponseUtil, RepairMaxController repairMaxController) {
-    public ValueTask<string> RepairMax(string url, RepairInfo info, MongoId sessionId) {
+    public ValueTask<string> RepairMax(string url, RepairDataRequest dataRequest, MongoId sessionId) {
         return new
-            ValueTask<string>(httpResponseUtil.GetBody(repairMaxController.RepairMaxWithKit(info, sessionId)));
+            ValueTask<string>(httpResponseUtil.GetBody(repairMaxController.RepairMaxWithKit(dataRequest, sessionId)));
     }
 }

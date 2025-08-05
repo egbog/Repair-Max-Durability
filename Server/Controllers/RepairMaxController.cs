@@ -14,7 +14,7 @@ public class RepairMaxController(
     GetConfig                       config,
     ISptLogger<RepairMaxController> logger,
     RepairMaxService                repairMaxService) {
-    public List<Item> RepairMaxWithKit(RepairInfo info, MongoId sessionId) {
-        return repairMaxService.RepairMaxItemByKit(info, sessionId);
+    public List<Item> RepairMaxWithKit(RepairDataRequest dataRequest, MongoId sessionId) {
+        return repairMaxService.RepairMaxItemByKit(dataRequest, sessionId);
     }
 }

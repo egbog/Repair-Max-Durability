@@ -16,17 +16,17 @@ public class RepairMaxService(
     ProfileHelper                profileHelper,
     RepairHelper                 repairHelper,
     ISptLogger<RepairMaxService> logger) {
-    public List<Item> RepairMaxItemByKit(RepairInfo info, MongoId sessionId) {
+    public List<Item> RepairMaxItemByKit(RepairDataRequest dataRequest, MongoId sessionId) {
         // grab profile inventory
         PmcData?          pmcData   = profileHelper.GetPmcProfile(sessionId);
         BotBaseInventory? inventory = pmcData?.Inventory;
         if (inventory?.Items == null)
             throw new Exception($"Unable to find pmc inventory data for id: {sessionId}. Profile may be corrupt.");
 
-        Item itemToRepair = inventory.Items.Find((x) => info.ItemId == x.Id) ??
-                            throw new Exception($"Item {info.ItemId} not found in inventory.");
-        Item repairKit = inventory.Items.Find((x) => info.KitId == x.Id) ??
-                         throw new Exception($"Repair kit {info.KitId} not found in inventory.");
+        Item itemToRepair = inventory.Items.Find((x) => dataRequest.ItemId == x.Id) ??
+                            throw new Exception($"Item {dataRequest.ItemId} not found in inventory.");
+        Item repairKit = inventory.Items.Find((x) => dataRequest.KitId == x.Id) ??
+                         throw new Exception($"Repair kit {dataRequest.KitId} not found in inventory.");
 
         if (itemToRepair.Upd?.Repairable == null) throw new Exception($"Item {itemToRepair.Id} is not repairable.");
 

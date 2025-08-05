@@ -11,34 +11,21 @@ using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 namespace _RepairMaxDurability.Services;
 
 [Injectable]
-public class RepairMaxService(
-    DatabaseService              db,
-    ProfileHelper                profileHelper,
-    RepairHelper                 repairHelper,
-    ISptLogger<RepairMaxService> logger) {
-    public List<Item> RepairMaxItemByKit(RepairDataRequest dataRequest, MongoId sessionId) {
-        // grab profile inventory
-        PmcData?          pmcData   = profileHelper.GetPmcProfile(sessionId);
-        BotBaseInventory? inventory = pmcData?.Inventory;
-        if (inventory?.Items == null)
-            throw new Exception($"Unable to find pmc inventory data for id: {sessionId}. Profile may be corrupt.");
+public class RepairMaxService(DatabaseService db, RepairHelper repairHelper, ISptLogger<RepairMaxService> logger) {
+    public (RepairDetails repairDetails, Item repairKit) RepairMaxItemByKit(
+        RepairDataRequest dataRequest, MongoId sessionId, PmcData pmcData) {
+        Item? itemToRepair = pmcData.Inventory.Items.FirstOrDefault(x => x.Id == dataRequest.ItemId);
+        if (itemToRepair is null) throw new Exception($"Item {dataRequest.ItemId} not found in inventory.");
 
-        Item itemToRepair = inventory.Items.Find((x) => dataRequest.ItemId == x.Id) ??
-                            throw new Exception($"Item {dataRequest.ItemId} not found in inventory.");
-        Item repairKit = inventory.Items.Find((x) => dataRequest.KitId == x.Id) ??
-                         throw new Exception($"Repair kit {dataRequest.KitId} not found in inventory.");
+        Item? repairKit = pmcData.Inventory.Items.FirstOrDefault(x => x.Id == dataRequest.KitId);
+        if (repairKit is null) throw new Exception($"Repair kit {dataRequest.KitId} not found in inventory.");
 
         if (itemToRepair.Upd?.Repairable == null) throw new Exception($"Item {itemToRepair.Id} is not repairable.");
 
         double       amountToRepair       = 100 - itemToRepair.Upd.Repairable?.MaxDurability ?? 0;
         TemplateItem itemToRepairTemplate = db.GetItems()[itemToRepair.Template];
-        repairHelper.UpdateItemDurability(itemToRepair, itemToRepairTemplate, false, amountToRepair, true, 0, false);
-
-        // update our item
-        itemToRepair.Upd.Repairable.Durability = itemToRepair.Upd.Repairable.MaxDurability = 100;
-
-        if (logger.IsLogEnabled(LogLevel.Debug))
-            logger.Debug($"Repaired max {itemToRepairTemplate.Name} by {amountToRepair:F5} points.");
+        itemToRepair.Upd.Repairable.MaxDurability += amountToRepair;
+        repairHelper.UpdateItemDurability(itemToRepair, itemToRepairTemplate, false, amountToRepair, true, 1, false);
 
         // check if repair kit was crafted
         // for some reason crafted kits don't contain a "RepairKit" component in upd
@@ -46,11 +33,6 @@ public class RepairMaxService(
         TemplateItem repairKitTemplateItem = db.GetItems()[repairKit.Template];
 
         AddMaxResourceToKitIfMissing(repairKitTemplateItem, repairKit);
-
-        //if (repairKit.Upd?.RepairKit?.Resource == null) {
-        //    logger.Warning($"Repair kit {repairKit.Id} is corrupted. Fixing...");
-        //    repairKit.Upd = new Upd { RepairKit = new UpdRepairKit { Resource = config.MaxRepairResource } };
-        //}
 
         repairKit.Upd.RepairKit.Resource--;
 
@@ -60,7 +42,15 @@ public class RepairMaxService(
         // TraderControllerClass.DestroyItem() was changed to ThrowItem() and TryThrowItem()
 
         // organize our items into a parent "Items" so we can use JToken.First and JToken.Next client-side
-        return [itemToRepair, repairKit];
+
+        return (
+            new RepairDetails {
+                RepairPoints        = amountToRepair,
+                RepairedItem        = itemToRepair,
+                RepairedItemIsArmor = false,
+                RepairAmount        = amountToRepair,
+                RepairedByKit       = true
+            }, repairKit);
     }
 
     /// <summary>

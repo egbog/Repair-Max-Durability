@@ -16,18 +16,14 @@ using UnityEngine.EventSystems;
 
 namespace _RepairMaxDurability.Patches;
 
-public class RepairMaxDurabilityPatch : ModulePatch {
-    public class RepairInfo {
-        public MongoID ItemId { get; set; }
-        public MongoID KitId  { get; set; }
-    }
+public class RepairDataRequest {
+    public MongoID ItemId { get; set; }
+    public MongoID KitId  { get; set; }
+}
 
+public class RepairMaxDurabilityPatch : ModulePatch {
     public static T? Post<T>(string url, string data) {
         return JsonConvert.DeserializeObject<T>(RequestHandler.PostJson(url, data));
-    }
-
-    public static bool CheckOwner(Item item) {
-        return item.Owner.OwnerType == EOwnerType.Profile;
     }
 
     protected override MethodBase GetTargetMethod() {
@@ -44,7 +40,7 @@ public class RepairMaxDurabilityPatch : ModulePatch {
         Item?                     targetItem = targetItemContextAbstractClass?.Item;
 
         // check target item ownership
-        if (targetItem == null || !CheckOwner(targetItem)) return true;
+        if (targetItem == null || targetItem.Owner.OwnerType != EOwnerType.Profile) return true;
 
         // make sure the item being dragged is the repair kit
         // only repair Weapon types
@@ -82,7 +78,7 @@ public class RepairMaxDurabilityPatch : ModulePatch {
         // if code runs to here, then we satisfied all conditions to start the repair process
 
         // setup json to send to server
-        var info = new RepairInfo { ItemId = targetItem.Id, KitId = dragItemContext.Item.Id };
+        var info = new RepairDataRequest { ItemId = targetItem.Id, KitId = dragItemContext.Item.Id };
 
         // get data back from server
         ParseProfile.Profile? result =

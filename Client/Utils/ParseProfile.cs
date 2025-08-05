@@ -11,8 +11,8 @@ public class ParseProfile {
     public record Profile {
         public record Item {
             public record Repairable {
-                public int Durability    { get; set; }
-                public int MaxDurability { get; set; }
+                public float Durability    { get; set; }
+                public float MaxDurability { get; set; }
             }
 
             public record RepairKit {

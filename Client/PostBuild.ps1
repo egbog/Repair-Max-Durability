@@ -1,11 +1,12 @@
 param (
+	[string]$AssemblyName,
     [string]$Configuration,
 	[string]$Framework
 )
 
 $scriptDir = $PSScriptRoot
-$sourceFilesRelease = @("RepairMaxDurabilityClient.dll")
-$sourceFilesDebug = @("RepairMaxDurabilityClient.dll", "RepairMaxDurabilityClient.pdb", "RepairMaxDurabilityClient.dll.mdb")
+$sourceFilesRelease = @("$AssemblyName.dll")
+$sourceFilesDebug = @("$AssemblyName.dll", "$AssemblyName.pdb", "$AssemblyName.dll.mdb")
 $activeSourceFiles
 $sptInstallPath = "C:\Games\SPT 4.0.0"
 $sptClientModsPath = Join-Path $sptInstallPath "BepInEx\plugins"

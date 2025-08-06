@@ -1,4 +1,5 @@
 param (
+	[string]$DebugType,
 	[string]$AssemblyName,
     [string]$Configuration,
 	[string]$Framework
@@ -17,7 +18,14 @@ Write-Host ""
 # Determine mod output path based on build configuration
 switch ($Configuration) {
     'Debug'   { 
+		$activeSourceFiles = $sourceFilesDebug
 		$modOutput = Join-Path $scriptDir "bin\Debug\$Framework"
+	
+		if (!($DebugType -ceq "Full")){
+			Write-Host("DebugType not set to Full, unable to generate mdb.")
+			break
+		}
+		
 		$dllPath = Join-Path $modOutput $sourceFilesDebug[0]
 		
 		# Convert pdb to mdb
@@ -26,8 +34,6 @@ switch ($Configuration) {
 		
 		Write-Host "Created *.mdb file using pdb2mdb"
 		Write-Host "----------------------------------------------------------------------------------------------------"
-		
-		$activeSourceFiles = $sourceFilesDebug
 	}
     'Release' { 
 		$modOutput = Join-Path $scriptDir "bin\Release\$Framework"

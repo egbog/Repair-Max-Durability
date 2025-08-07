@@ -20,7 +20,7 @@ public class RepairMaxDurabilityPatch : ModulePatch {
     }
 
     [PatchPrefix]
-    public static bool Prefix(ref ItemContextClass dragItemContext, ref PointerEventData eventData) {
+    public static bool Prefix(ItemContextClass dragItemContext, PointerEventData eventData) {
         // make sure item is dragged onto another item, prevent null pointers
         if (!eventData.pointerEnter) return true; // return and run original method
 

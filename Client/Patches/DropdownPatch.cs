@@ -23,7 +23,7 @@ public class RepairerParametersPanelRefreshPatch : ModulePatch {
     }
 
     [PatchPrefix]
-    public static bool Prefix(ref RepairKitsItemClass repairKit) {
+    public static bool Prefix(RepairKitsItemClass repairKit) {
         return repairKit.RepairKitsTemplateClass._id != "86afd148ac929e6eddc5e370";
     }
 }

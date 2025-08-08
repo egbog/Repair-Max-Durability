@@ -2,7 +2,6 @@ using _RepairMaxDurability.Logger;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Extensions;
-using SPTarkov.Server.Core.Models;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
@@ -15,11 +14,9 @@ namespace _RepairMaxDurability.Injectors;
 [Injectable(TypePriority = OnLoadOrder.TraderCallbacks + 1)]
 public class AssortInjector(
     DatabaseService            db,
-    TraderStore                store,
     GetConfig                  config,
     ISptLogger<AssortInjector> logger,
-    DebugLoggerUtil            debugLoggerUtil,
-    AssortHelperExtensions     assortHelperExtensions) {
+    DebugLoggerUtil            debugLoggerUtil) {
     public void InjectAssort(MongoId itemId, MongoId assortId) {
         var metaData = new ModMetadata();
 
@@ -29,25 +26,24 @@ public class AssortInjector(
         Dictionary<MongoId, TemplateItem> itemsDict = db.GetItems();
         Dictionary<MongoId, Trader>       traders   = db.GetTraders();
 
-        foreach (Config.TraderStruct t in config.Traders) {
-            if (!t.Enabled) continue;
+        foreach (Config.TraderStruct assortConfig in config.Traders) {
+            if (!assortConfig.Enabled) continue;
 
-            (MongoId traderId, Trader trader) = traders.FirstOrDefault(x => x.Value.Base.Nickname == t.Name);
-            if (trader == null) throw new Exception($"Trader '{t.Name}' not found. Check spelling in config file.");
+            (MongoId traderId, Trader trader) = traders.FirstOrDefault(x => x.Value.Base.Nickname == assortConfig.Name);
+            if (trader == null) throw new Exception($"Trader '{assortConfig.Name}' not found. Check spelling in config file.");
 
+            CurrencyType currency = AssortHelperExtensions.GetTraderCurrencyType(trader);
 
-            if (currentTrader.Base.Currency == null)
-                throw new
-                    Exception($"Trader '{currentTrader.Base.Nickname}' has no assigned currency. Are you using a modded trader?");
+            AssortHelperExtensions.ItemAssort itemAssort =
+                AssortHelperExtensions.CreateAssort(itemId, assortId, currency, assortConfig, itemsDict[itemId]);
 
-            AssortHelperExtensions.ItemAssort result = assortHelperExtensions.CreateAssort(itemId, assortId,
-                (CurrencyType)currentTrader.Base.Currency, t, config.MaxRepairResource);
+            TraderAssort traderAssort = AssortHelperExtensions.GetTraderAssortRef(db, traderId);
 
-            assortHelperExtensions.AddItemAssort(result, currentTraderId);
+            AssortHelperExtensions.AddItemAssort(itemAssort, traderAssort);
 
             if (!logger.IsLogEnabled(LogLevel.Debug)) continue;
             count++;
-            injectResult += debugLoggerUtil.LogResult(t);
+            injectResult += debugLoggerUtil.LogResult(assortConfig);
         }
 
         if (!logger.IsLogEnabled(LogLevel.Debug)) return;

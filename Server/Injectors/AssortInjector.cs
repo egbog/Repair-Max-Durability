@@ -26,22 +26,15 @@ public class AssortInjector(
         var count        = 0;
         var injectResult = "";
 
-        Dictionary<MongoId, Trader> tradersDict = db.GetTraders();
-        if (tradersDict == null)
-            throw new
-                Exception("Traders not loaded properly. Check for any corrupt modded traders and restart server.");
+        Dictionary<MongoId, TemplateItem> itemsDict = db.GetItems();
+        Dictionary<MongoId, Trader>       traders   = db.GetTraders();
 
         foreach (Config.TraderStruct t in config.Traders) {
             if (!t.Enabled) continue;
 
-            // find matching trader
-            ITrader? currentITrader = store.GetAllTraders().FirstOrDefault((x) => x.Name == t.Name) ?? null;
-            if (currentITrader == null)
-                throw new Exception($"Trader '{t.Name}' not found. Check spelling in config file.");
+            (MongoId traderId, Trader trader) = traders.FirstOrDefault(x => x.Value.Base.Nickname == t.Name);
+            if (trader == null) throw new Exception($"Trader '{t.Name}' not found. Check spelling in config file.");
 
-            // get assort using ITrader mongoId
-            MongoId currentTraderId = currentITrader.Id;
-            Trader  currentTrader   = tradersDict[currentTraderId];
 
             if (currentTrader.Base.Currency == null)
                 throw new

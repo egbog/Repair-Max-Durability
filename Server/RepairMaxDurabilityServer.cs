@@ -1,4 +1,5 @@
 using _RepairMaxDurability.Injectors;
+using _RepairMaxDurability.Services;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Common;
@@ -30,7 +31,7 @@ public class RepairMaxDurability(
     ISptLogger<RepairMaxDurability> logger,
     CustomItemService               customItem,
     GetConfig                       config,
-    AssortInjector                  assortInjector,
+    AssortService                   assortService,
     CraftInjector                   craftInjector) : IOnLoad {
     public Task OnLoad() {
         var metaData = new ModMetadata();
@@ -74,7 +75,7 @@ public class RepairMaxDurability(
 
         try {
             craftInjector.InjectCraft(itemId, craftId);
-            assortInjector.AddAssort(itemId, assortId);
+            assortService.AddAssort(itemId, assortId);
             logger.Success($"{metaData.Name} v{metaData.Version}: Loaded successfully");
         }
         catch (Exception ex) {

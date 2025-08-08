@@ -28,7 +28,7 @@ public static class AssortHelperExtensions {
         traderAssort.LoyalLevelItems.Add(itemAssort.AssortItem.Id, itemAssort.LoyaltyLevel);
     }
 
-    public static ItemAssort CreateAssort(string              itemId,       string assortId, CurrencyType currencyType,
+    public static ItemAssort CreateAssort(MongoId             itemId,       MongoId assortId, CurrencyType currencyType,
                                           Config.TraderStruct assortConfig, TemplateItem templateitem) {
         return new ItemAssort {
             AssortItem = new Item {

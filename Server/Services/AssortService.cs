@@ -41,7 +41,7 @@ public class AssortService(
 
             TraderAssort traderAssort = GetTraderAssortRef(traderId);
 
-            AssortHelperExtensions.AddItemAssort(itemAssort, traderAssort);
+            AddItemAssort(itemAssort, traderAssort);
 
             if (!logger.IsLogEnabled(LogLevel.Debug)) continue;
             count++;
@@ -63,5 +63,11 @@ public class AssortService(
             throw new Exception($"Trader {traderId} not found.");
 
         return trader.Assort;
+    }
+
+    protected static void AddItemAssort(AssortHelperExtensions.ItemAssort itemAssort, TraderAssort traderAssort) {
+        traderAssort.Items.Add(itemAssort.AssortItem);
+        traderAssort.BarterScheme.Add(itemAssort.AssortItem.Id, itemAssort.BarterScheme);
+        traderAssort.LoyalLevelItems.Add(itemAssort.AssortItem.Id, itemAssort.LoyaltyLevel);
     }
 }

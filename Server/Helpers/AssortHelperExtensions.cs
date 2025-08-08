@@ -22,12 +22,6 @@ public static class AssortHelperExtensions {
         return (CurrencyType)trader.Base.Currency;
     }
 
-    public static void AddItemAssort(ItemAssort itemAssort, TraderAssort traderAssort) {
-        traderAssort.Items.Add(itemAssort.AssortItem);
-        traderAssort.BarterScheme.Add(itemAssort.AssortItem.Id, itemAssort.BarterScheme);
-        traderAssort.LoyalLevelItems.Add(itemAssort.AssortItem.Id, itemAssort.LoyaltyLevel);
-    }
-
     public static ItemAssort CreateAssort(MongoId             itemId,       MongoId assortId, CurrencyType currencyType,
                                           Config.TraderStruct assortConfig, TemplateItem templateitem) {
         return new ItemAssort {

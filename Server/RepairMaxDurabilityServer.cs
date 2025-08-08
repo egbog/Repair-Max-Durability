@@ -74,7 +74,7 @@ public class RepairMaxDurability(
 
         try {
             craftInjector.InjectCraft(itemId, craftId);
-            assortInjector.InjectAssort(itemId, assortId);
+            assortInjector.AddAssort(itemId, assortId);
             logger.Success($"{metaData.Name} v{metaData.Version}: Loaded successfully");
         }
         catch (Exception ex) {

@@ -17,7 +17,7 @@ public class AssortInjector(
     GetConfig                  config,
     ISptLogger<AssortInjector> logger,
     DebugLoggerUtil            debugLoggerUtil) {
-    public void InjectAssort(MongoId itemId, MongoId assortId) {
+    public void AddAssort(MongoId itemId, MongoId assortId) {
         var metaData = new ModMetadata();
 
         var count        = 0;

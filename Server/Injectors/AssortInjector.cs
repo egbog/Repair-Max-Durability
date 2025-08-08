@@ -56,15 +56,22 @@ public class AssortInjector(
     }
 }
 
-[Injectable]
-public class AssortHelperExtensions(DatabaseService db) {
+public static class AssortHelperExtensions {
     public record ItemAssort {
         public required Item                     AssortItem   { get; init; }
         public required List<List<BarterScheme>> BarterScheme { get; init; }
         public required int                      LoyaltyLevel { get; init; }
     }
 
-    public void AddItemAssort(ItemAssort itemAssort, MongoId traderId) {
+    public static CurrencyType GetTraderCurrencyType(Trader trader) {
+        if (trader.Base.Currency == null)
+            throw new
+                Exception($"Trader '{trader.Base.Nickname}' has no assigned currency. Are you using a modded trader?");
+
+        return (CurrencyType)trader.Base.Currency;
+    }
+
+    public static TraderAssort GetTraderAssortRef(DatabaseService db, MongoId traderId) {
         Dictionary<MongoId, Trader> tradersDict = db.GetTraders();
         if (tradersDict == null)
             throw new
@@ -73,13 +80,17 @@ public class AssortHelperExtensions(DatabaseService db) {
         if (!tradersDict.TryGetValue(traderId, out Trader? trader))
             throw new Exception($"Trader {traderId} not found.");
 
-        trader.Assort.Items.Add(itemAssort.AssortItem);
-        trader.Assort.BarterScheme.Add(itemAssort.AssortItem.Id, itemAssort.BarterScheme);
-        trader.Assort.LoyalLevelItems.Add(itemAssort.AssortItem.Id, itemAssort.LoyaltyLevel);
+        return trader.Assort;
     }
 
-    public ItemAssort CreateAssort(string              itemId,       string assortId, CurrencyType currencyType,
-                                   Config.TraderStruct assortConfig, int    maxRepairResource) {
+    public static void AddItemAssort(ItemAssort itemAssort, TraderAssort traderAssort) {
+        traderAssort.Items.Add(itemAssort.AssortItem);
+        traderAssort.BarterScheme.Add(itemAssort.AssortItem.Id, itemAssort.BarterScheme);
+        traderAssort.LoyalLevelItems.Add(itemAssort.AssortItem.Id, itemAssort.LoyaltyLevel);
+    }
+
+    public static ItemAssort CreateAssort(string              itemId,       string assortId, CurrencyType currencyType,
+                                          Config.TraderStruct assortConfig, TemplateItem templateitem) {
         return new ItemAssort {
             AssortItem = new Item {
                 Id       = assortId,
@@ -90,7 +101,7 @@ public class AssortHelperExtensions(DatabaseService db) {
                     BuyRestrictionMax     = assortConfig.BuyLimit,
                     BuyRestrictionCurrent = 0,
                     StackObjectsCount     = assortConfig.Stock,
-                    RepairKit             = new UpdRepairKit { Resource = maxRepairResource }
+                    RepairKit             = new UpdRepairKit { Resource = templateitem.Properties?.MaxRepairResource }
                 }
             },
             BarterScheme = [

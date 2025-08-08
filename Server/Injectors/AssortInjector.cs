@@ -26,11 +26,10 @@ public class AssortInjector(
         Dictionary<MongoId, TemplateItem> itemsDict = db.GetItems();
         Dictionary<MongoId, Trader>       traders   = db.GetTraders();
 
-        foreach (Config.TraderStruct assortConfig in config.Traders) {
-            if (!assortConfig.Enabled) continue;
-
+        foreach (Config.TraderStruct assortConfig in config.Traders.Where(assortConfig => assortConfig.Enabled)) {
+            // fetch trader
             (MongoId traderId, Trader trader) = traders.FirstOrDefault(x => x.Value.Base.Nickname == assortConfig.Name);
-            if (trader == null) throw new Exception($"Trader '{assortConfig.Name}' not found. Check spelling in config file.");
+            if (trader == null) throw new Exception($"Trader '{assortConfig.Name}' not found. Ensure trader's name is correct in config file.");
 
             CurrencyType currency = AssortHelperExtensions.GetTraderCurrencyType(trader);
 

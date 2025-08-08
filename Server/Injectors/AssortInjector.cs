@@ -1,3 +1,4 @@
+using _RepairMaxDurability.Helpers;
 using _RepairMaxDurability.Logger;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
@@ -50,61 +51,5 @@ public class AssortInjector(
         if (!logger.IsLogEnabled(LogLevel.Debug)) return;
         logger.Debug($"{metaData.Name} v{metaData.Version}: Successfully injected {count} assort(s).");
         logger.Debug($"{injectResult}");
-    }
-}
-
-public static class AssortHelperExtensions {
-    public record ItemAssort {
-        public required Item                     AssortItem   { get; init; }
-        public required List<List<BarterScheme>> BarterScheme { get; init; }
-        public required int                      LoyaltyLevel { get; init; }
-    }
-
-    public static CurrencyType GetTraderCurrencyType(Trader trader) {
-        if (trader.Base.Currency == null)
-            throw new
-                Exception($"Trader '{trader.Base.Nickname}' has no assigned currency. Are you using a modded trader?");
-
-        return (CurrencyType)trader.Base.Currency;
-    }
-
-    public static TraderAssort GetTraderAssortRef(DatabaseService db, MongoId traderId) {
-        Dictionary<MongoId, Trader> tradersDict = db.GetTraders();
-        if (tradersDict == null)
-            throw new
-                Exception("Traders not loaded properly. Check for any corrupt modded traders and restart server.");
-
-        if (!tradersDict.TryGetValue(traderId, out Trader? trader))
-            throw new Exception($"Trader {traderId} not found.");
-
-        return trader.Assort;
-    }
-
-    public static void AddItemAssort(ItemAssort itemAssort, TraderAssort traderAssort) {
-        traderAssort.Items.Add(itemAssort.AssortItem);
-        traderAssort.BarterScheme.Add(itemAssort.AssortItem.Id, itemAssort.BarterScheme);
-        traderAssort.LoyalLevelItems.Add(itemAssort.AssortItem.Id, itemAssort.LoyaltyLevel);
-    }
-
-    public static ItemAssort CreateAssort(string              itemId,       string assortId, CurrencyType currencyType,
-                                          Config.TraderStruct assortConfig, TemplateItem templateitem) {
-        return new ItemAssort {
-            AssortItem = new Item {
-                Id       = assortId,
-                Template = itemId,
-                ParentId = "hideout",
-                SlotId   = "hideout",
-                Upd = new Upd {
-                    BuyRestrictionMax     = assortConfig.BuyLimit,
-                    BuyRestrictionCurrent = 0,
-                    StackObjectsCount     = assortConfig.Stock,
-                    RepairKit             = new UpdRepairKit { Resource = templateitem.Properties?.MaxRepairResource }
-                }
-            },
-            BarterScheme = [
-                [new BarterScheme { Count = assortConfig.Price, Template = currencyType.GetCurrencyTpl() }]
-            ],
-            LoyaltyLevel = assortConfig.LoyaltyLevel
-        };
     }
 }

@@ -20,7 +20,7 @@ public record ModMetadata : AbstractModMetadata {
     public override List<string>?               LoadAfter         { get; set; }
     public override List<string>?               Incompatibilities { get; set; }
     public override Dictionary<string, string>? ModDependencies   { get; set; }
-    public override string?                     Url               { get; set; } = "https://github.com/egbog/Repair-Max-Durability-Server";
+    public override string?                     Url               { get; set; } = "https://github.com/egbog/Repair-Max-Durability";
     public override bool?                       IsBundleMod       { get; set; }  = false;
     public override string                      License           { get; init; } = "MIT";
 }

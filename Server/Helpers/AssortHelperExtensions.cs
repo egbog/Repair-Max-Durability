@@ -22,18 +22,6 @@ public static class AssortHelperExtensions {
         return (CurrencyType)trader.Base.Currency;
     }
 
-    public static TraderAssort GetTraderAssortRef(DatabaseService db, MongoId traderId) {
-        Dictionary<MongoId, Trader> tradersDict = db.GetTraders();
-        if (tradersDict == null)
-            throw new
-                Exception("Traders not loaded properly. Check for any corrupt modded traders and restart server.");
-
-        if (!tradersDict.TryGetValue(traderId, out Trader? trader))
-            throw new Exception($"Trader {traderId} not found.");
-
-        return trader.Assort;
-    }
-
     public static void AddItemAssort(ItemAssort itemAssort, TraderAssort traderAssort) {
         traderAssort.Items.Add(itemAssort.AssortItem);
         traderAssort.BarterScheme.Add(itemAssort.AssortItem.Id, itemAssort.BarterScheme);

@@ -1,8 +1,8 @@
 using _RepairMaxDurability.Helpers;
+using _RepairMaxDurability.Injectors;
 using _RepairMaxDurability.Logger;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
-using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
@@ -10,14 +10,14 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
-namespace _RepairMaxDurability.Injectors;
+namespace _RepairMaxDurability.Services;
 
 [Injectable(TypePriority = OnLoadOrder.TraderCallbacks + 1)]
-public class AssortInjector(
-    DatabaseService            db,
-    GetConfig                  config,
-    ISptLogger<AssortInjector> logger,
-    DebugLoggerUtil            debugLoggerUtil) {
+public class AssortService(
+    DatabaseService           db,
+    GetConfig                 config,
+    ISptLogger<AssortService> logger,
+    DebugLoggerUtil           debugLoggerUtil) {
     public void AddAssort(MongoId itemId, MongoId assortId) {
         var metaData = new ModMetadata();
 
@@ -39,7 +39,7 @@ public class AssortInjector(
             AssortHelperExtensions.ItemAssort itemAssort =
                 AssortHelperExtensions.CreateAssort(itemId, assortId, currency, assortConfig, itemsDict[itemId]);
 
-            TraderAssort traderAssort = AssortHelperExtensions.GetTraderAssortRef(db, traderId);
+            TraderAssort traderAssort = GetTraderAssortRef(traderId);
 
             AssortHelperExtensions.AddItemAssort(itemAssort, traderAssort);
 
@@ -51,5 +51,17 @@ public class AssortInjector(
         if (!logger.IsLogEnabled(LogLevel.Debug)) return;
         logger.Debug($"{metaData.Name} v{metaData.Version}: Successfully injected {count} assort(s).");
         logger.Debug($"{injectResult}");
+    }
+
+    protected TraderAssort GetTraderAssortRef(MongoId traderId) {
+        Dictionary<MongoId, Trader> tradersDict = db.GetTraders();
+        if (tradersDict == null)
+            throw new
+                Exception("Traders not loaded properly. Check for any corrupt modded traders and restart server.");
+
+        if (!tradersDict.TryGetValue(traderId, out Trader? trader))
+            throw new Exception($"Trader {traderId} not found.");
+
+        return trader.Assort;
     }
 }

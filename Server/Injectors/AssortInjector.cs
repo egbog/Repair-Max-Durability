@@ -29,7 +29,9 @@ public class AssortInjector(
         foreach (Config.TraderStruct assortConfig in config.Traders.Where(assortConfig => assortConfig.Enabled)) {
             // fetch trader
             (MongoId traderId, Trader trader) = traders.FirstOrDefault(x => x.Value.Base.Nickname == assortConfig.Name);
-            if (trader == null) throw new Exception($"Trader '{assortConfig.Name}' not found. Ensure trader's name is correct in config file.");
+            if (trader == null)
+                throw new
+                    Exception($"Trader '{assortConfig.Name}' not found. Ensure trader's name is correct in config file.");
 
             CurrencyType currency = AssortHelperExtensions.GetTraderCurrencyType(trader);
 

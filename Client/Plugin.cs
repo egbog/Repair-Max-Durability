@@ -11,7 +11,7 @@ using BepInEx.Logging;
 
 namespace _RepairMaxDurability {
 
-    [BepInPlugin("com.egbog.maxdura", "MaxDurability", "2.0.0")]
+    [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
     [BepInProcess("EscapeFromTarkov.exe")]
     public class Plugin : BaseUnityPlugin
     {

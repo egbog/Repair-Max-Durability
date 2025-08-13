@@ -6,7 +6,7 @@ namespace _RepairMaxDurability.Utils;
 
 public class ParseProfile {
     public static void UpdateValues(RepairDataResponse repairDataResponse, RepairableComponent targetItemRc,
-                                    Item                           repairKit) {
+                                    Item               repairKit) {
         if (repairDataResponse.Items.Find(i => i.Id == targetItemRc.Item.Id) is { } item) {
             targetItemRc.Durability    = item.Upd.Repairable.Durability;
             targetItemRc.MaxDurability = item.Upd.Repairable.MaxDurability;

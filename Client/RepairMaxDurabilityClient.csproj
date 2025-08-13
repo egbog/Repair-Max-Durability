@@ -44,7 +44,6 @@
   </ItemGroup>
   
   <ItemGroup>
-	<Reference Include="BepInEx" />
     <Reference Include="Comfort" />
     <Reference Include="UnityEngine" />
 	<Reference Include="UnityEngine.CoreModule" />
@@ -52,7 +51,6 @@
 	<Reference Include="ItemComponent.Types" />
 	<Reference Include="spt-reflection" />
 	<Reference Include="spt-common" />
-	<Reference Include="0Harmony" />
   </ItemGroup>
   
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

@@ -1,19 +1,20 @@
-﻿using System.Reflection;
-using EFT.UI;
+﻿using EFT.UI;
 using SPT.Reflection.Patching;
-using RepairStrategy = GInterface37;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace _RepairMaxDurability.Patches;
 
 public class ShowRepairWindowPatch : ModulePatch {
     protected override MethodBase GetTargetMethod() {
-        return typeof(RepairWindow).GetMethod("method_2", BindingFlags.Instance | BindingFlags.Public);
+        return typeof(RepairControllerClass).GetMethod("method_1", BindingFlags.Instance | BindingFlags.Public);
     }
 
     [PatchPostfix]
-    public static void Postfix(ref RepairStrategy __result) {
+    public static void Postfix(ref IEnumerable<GClass902> __result) {
         // this was way more complicated than it needed to be...
-        __result.RepairKitsCollections.RemoveAll(x => x.RepairKitsTemplateClass._id == "86afd148ac929e6eddc5e370");
+        __result = __result.Where(x => x.RepairKitsTemplateClass._id != "86afd148ac929e6eddc5e370").ToList();
     }
 }
 

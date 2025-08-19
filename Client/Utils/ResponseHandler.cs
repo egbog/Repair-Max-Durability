@@ -4,7 +4,7 @@ using EFT.InventoryLogic;
 
 namespace _RepairMaxDurability.Utils;
 
-public class ParseProfile {
+public class ResponseHandler {
     public static void UpdateValues(RepairDataResponse repairDataResponse, RepairableComponent targetItemRc,
                                     Item               repairKit) {
         if (repairDataResponse.Items.Find(i => i.Id == targetItemRc.Item.Id) is { } item) {

@@ -4,7 +4,9 @@ using Newtonsoft.Json;
 
 namespace _RepairMaxDurability.ServerJsonStructures;
 
-public record RepairDataResponse {
+public interface IRepairDataResponse{}
+
+public record RepairDataResponse : IRepairDataResponse {
     [JsonProperty("data")]
     public List<Items> Items { get; set; }
 }

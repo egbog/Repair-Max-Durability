@@ -66,15 +66,14 @@ public class RepairMaxDurabilityPatch : ModulePatch {
         // if code runs to here, then we satisfied all conditions to start the repair process
 
         // setup json to send to server
-        var info = new RepairDataRequest { ItemId = targetItem.Id, KitId = dragItemContext.Item.Id };
+        var request = new RepairDataRequest { ItemId = targetItem.Id, KitId = dragItemContext.Item.Id };
 
         try {
             // get data back from server
-            RepairDataResponse result =
-                Requester.SendRequest<RepairDataResponse, RepairDataRequest>("/maxdura/checkdragged", info);
+            RepairDataResponse response = Requester.SendRequest<RepairDataResponse>("/maxdura/checkdragged", request);
 
             // set durability and repair kit resource
-            ParseProfile.UpdateValues(result, repairableComponent, dragItemContext.Item);
+            ParseProfile.UpdateValues(response, repairableComponent, dragItemContext.Item);
             // sound and notification
             Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.RepairComplete);
             NotificationManagerClass.DisplayMessageNotification($"{"Weapon successfully repaired to"

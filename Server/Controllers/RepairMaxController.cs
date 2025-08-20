@@ -16,6 +16,7 @@ public class RepairMaxController(
     RepairService    repairService) {
     public List<Item> RepairMaxWithKit(RepairDataRequest dataRequest, MongoId sessionId) {
         PmcData? pmcData = profileHelper.GetPmcProfile(sessionId);
+        if (pmcData is null) throw new Exception($"pmcData not found for id: {sessionId}. Aborting repair.");
 
         (RepairDetails repairDetails, Item repairKit) =
             repairMaxService.RepairMaxItemByKit(dataRequest, sessionId, pmcData);

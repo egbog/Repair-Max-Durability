@@ -11,10 +11,9 @@ namespace _RepairMaxDurability.Static_Routers;
 public class RepairMaxRouter : StaticRouter {
     public RepairMaxRouter(JsonUtil jsonUtil, RepairMaxCallback repairMaxCallback) : base(jsonUtil,
     [
-        new RouteAction("/maxdura/checkdragged",
-                        async (url, info, sessionId, _) =>
-                            await repairMaxCallback.RepairMax(url, info as RepairDataRequest, sessionId),
-                        typeof(RepairDataRequest))
+        new RouteAction<RepairDataRequest>("/maxdura/checkdragged",
+                                           async (url, info, sessionId, _) =>
+                                               await repairMaxCallback.RepairMax(url, info, sessionId))
     ]) { }
 }
 

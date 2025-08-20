@@ -17,18 +17,21 @@
   <ItemGroup>
     <PackageReference Include="SPTarkov.Common" Version="4.0.0-prerelease26" />
     <PackageReference Include="SPTarkov.DI" Version="4.0.0-prerelease26" />
-	<PackageReference Include="SPTarkov.Server.Core" Version="4.0.0-prerelease26" />
   </ItemGroup>
   
   <!-- Allow go to declaration using project source instead of decompiled source -->
   <ItemGroup Condition="'$(Configuration)'=='Source-Debug'">
     <ProjectReference Include="..\..\server-csharp\Libraries\SPTarkov.Server.Core\SPTarkov.Server.Core.csproj" />
   </ItemGroup>
+  
+  <ItemGroup Condition="'$(Configuration)'!='Source-Debug'">
+    <PackageReference Include="SPTarkov.Server.Core" Version="4.0.0-prerelease26" />
+  </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Logger\" />
     <Folder Include="Controllers\" />
-    <Folder Include="Services\" />
+    <Folder Include="Helpers\" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

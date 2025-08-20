@@ -56,7 +56,7 @@ public class RepairMaxService(DatabaseService db, RepairHelper repairHelper, ISp
     /// <param name="repairKitDetails">Repair kit details from db</param>
     /// <param name="repairKitInInventory">Repair kit to update</param>
     protected void AddMaxResourceToKitIfMissing(TemplateItem repairKitDetails, Item repairKitInInventory) {
-        int? maxRepairAmount = repairKitDetails.Properties.MaxRepairResource;
+        int? maxRepairAmount = repairKitDetails.Properties?.MaxRepairResource;
         if (repairKitInInventory.Upd is null) {
             if (logger.IsLogEnabled(LogLevel.Debug))
                 logger.Debug($"Repair kit: {repairKitInInventory.Id} in inventory lacks upd object, adding");

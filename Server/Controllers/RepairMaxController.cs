@@ -7,6 +7,8 @@ using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Services;
 
+namespace _RepairMaxDurability.Controllers;
+
 [Injectable]
 public class RepairMaxController(
     ProfileHelper    profileHelper,

@@ -1,3 +1,4 @@
+using _RepairMaxDurability.Controllers;
 using _RepairMaxDurability.Static_Routers;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;

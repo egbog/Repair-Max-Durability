@@ -22,11 +22,17 @@
   "Crafts": [
     {
       "Enabled": true,
-	  "CraftTime": 1200,
+	  "CraftTime": 3600,
       "Requirements": [
         {
           "type": "Tool",
-          "templateId": "544fb5454bdc2df8738b456a"
+          "templateId": "590c2e1186f77425357b6124"
+        },
+		{
+          "type": "Item",
+          "templateId": "5bc9b355d4351e6d1509862a",
+          "isFunctional": false,
+          "count": 1
         },
         {
           "type": "Item",

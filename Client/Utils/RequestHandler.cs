@@ -10,7 +10,7 @@ public class RequestHandler {
         string serializedData = JsonConvert.SerializeObject(data);
         string response       = SPT.Common.Http.RequestHandler.PostJson(url, serializedData);
         T deserializedResponse = JsonConvert.DeserializeObject<T>(response) ??
-                                  throw new Exception($"Null response from server");
+                                 throw new Exception($"Null response from server");
 
         return deserializedResponse;
     }

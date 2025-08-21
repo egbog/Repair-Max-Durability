@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace _RepairMaxDurability.ServerJsonStructures;
 
-public interface IRepairDataResponse{}
+public interface IRepairDataResponse { }
 
 public record RepairDataResponse : IRepairDataResponse {
     [JsonProperty("data")]

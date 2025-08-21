@@ -1,6 +1,6 @@
 ﻿/* LICENSE:
  * MIT
- * 
+ *
  * AUTHOR:
  * egbog
  * */

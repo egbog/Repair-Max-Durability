@@ -22,23 +22,30 @@ public class RepairMaxDurabilityPatch : ModulePatch {
     [PatchPrefix]
     public static bool Prefix(ItemContextClass dragItemContext, PointerEventData eventData) {
         // make sure item is dragged onto another item, prevent null pointers
-        if (!eventData.pointerEnter) return true; // return and run original method
+        if (!eventData.pointerEnter) {
+            return true; // return and run original method
+        }
 
         ItemView?                 componentInParent = eventData.pointerEnter.GetComponentInParent<ItemView>();
         ItemContextAbstractClass? targetItemContextAbstractClass = componentInParent?.ItemContext;
         Item?                     targetItem = targetItemContextAbstractClass?.Item;
 
         // check target item ownership
-        if (targetItem == null || targetItem.Owner.OwnerType != EOwnerType.Profile) return true;
+        if (targetItem == null || targetItem.Owner.OwnerType != EOwnerType.Profile) {
+            return true;
+        }
 
         // make sure the item being dragged is the repair kit
         // only repair Weapon types
         if (dragItemContext.Item.TemplateId                   != "86afd148ac929e6eddc5e370" ||
-            ItemViewFactory.GetItemType(targetItem.GetType()) != EItemType.Weapon)
+            ItemViewFactory.GetItemType(targetItem.GetType()) != EItemType.Weapon) {
             return true;
+        }
 
         // must contain a RepairableComponent
-        if (!targetItem.TryGetItemComponent(out RepairableComponent repairableComponent)) return true;
+        if (!targetItem.TryGetItemComponent(out RepairableComponent repairableComponent)) {
+            return true;
+        }
 
         // check if the durability is below 100
         if (Mathf.Approximately(repairableComponent.MaxDurability, 100f)) // item already at 100 max durability
@@ -70,7 +77,8 @@ public class RepairMaxDurabilityPatch : ModulePatch {
 
         try {
             // get data back from server
-            RepairDataResponse response = RequestHandler.SendRequest<RepairDataResponse>("/maxdura/checkdragged", request);
+            RepairDataResponse response =
+                RequestHandler.SendRequest<RepairDataResponse>("/maxdura/checkdragged", request);
 
             // set durability and repair kit resource
             ResponseHandler.UpdateValues(response, repairableComponent, dragItemContext.Item);

@@ -24,6 +24,7 @@ public class AssortService(
         var count        = 0;
         var injectResult = "";
 
+        // cache in case we have to accomodate a large number of traders
         Dictionary<MongoId, TemplateItem> itemsDict = db.GetItems();
         Dictionary<MongoId, Trader>       traders   = db.GetTraders();
 

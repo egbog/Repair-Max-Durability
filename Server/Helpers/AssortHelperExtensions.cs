@@ -14,9 +14,10 @@ public static class AssortHelperExtensions {
     }
 
     public static CurrencyType GetTraderCurrencyType(Trader trader) {
-        if (trader.Base.Currency == null)
+        if (trader.Base.Currency == null) {
             throw new
                 Exception($"Trader '{trader.Base.Nickname}' has no assigned currency. Are you using a modded trader?");
+        }
 
         return (CurrencyType)trader.Base.Currency;
     }

@@ -31,9 +31,10 @@ public class AssortService(
         foreach (Config.TraderStruct assortConfig in config.Traders.Where(assortConfig => assortConfig.Enabled)) {
             // fetch trader
             (MongoId traderId, Trader trader) = traders.FirstOrDefault(x => x.Value.Base.Nickname == assortConfig.Name);
-            if (trader == null)
+            if (trader == null) {
                 throw new
                     Exception($"Trader '{assortConfig.Name}' not found. Ensure trader's name is correct in config file.");
+            }
 
             CurrencyType currency = AssortHelperExtensions.GetTraderCurrencyType(trader);
 
@@ -44,24 +45,32 @@ public class AssortService(
 
             AddItemAssort(itemAssort, traderAssort);
 
-            if (!logger.IsLogEnabled(LogLevel.Debug)) continue;
+            if (!logger.IsLogEnabled(LogLevel.Debug)) {
+                continue;
+            }
+
             count++;
             injectResult += debugLoggerUtil.LogResult(assortConfig);
         }
 
-        if (!logger.IsLogEnabled(LogLevel.Debug)) return;
+        if (!logger.IsLogEnabled(LogLevel.Debug)) {
+            return;
+        }
+
         logger.Debug($"{metaData.Name} v{metaData.Version}: Successfully injected {count} assort(s).");
         logger.Debug($"{injectResult}");
     }
 
     protected TraderAssort GetTraderAssortRef(MongoId traderId) {
         Dictionary<MongoId, Trader> tradersDict = db.GetTraders();
-        if (tradersDict == null)
+        if (tradersDict == null) {
             throw new
                 Exception("Traders not loaded properly. Check for any corrupt modded traders and restart server.");
+        }
 
-        if (!tradersDict.TryGetValue(traderId, out Trader? trader))
+        if (!tradersDict.TryGetValue(traderId, out Trader? trader)) {
             throw new Exception($"Trader {traderId} not found.");
+        }
 
         return trader.Assort;
     }

@@ -1,7 +1,6 @@
 ﻿using System;
 using _RepairMaxDurability.ServerJsonStructures;
 using Newtonsoft.Json;
-using SPT.Common.Http;
 
 namespace _RepairMaxDurability.Utils;
 

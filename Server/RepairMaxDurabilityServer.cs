@@ -54,7 +54,7 @@ public class RepairMaxDurability(
                         Name      = "Spare firearm parts",
                         ShortName = "Spare firearm parts",
                         Description =
-                            "Spare parts such as bolt carrier groups, firing pins and other common wear items. Enough to make about 5 repairs."
+                            "A collection of spare parts such as bolt carrier groups, firing pins, springs, and other common wear items."
                     }
                 }
             },

@@ -59,7 +59,7 @@ public class RepairMaxDurability(
                 }
             },
             OverrideProperties = new Props {
-                Weight            = 1,
+                Weight            = 1.4,
                 MaxRepairResource = config.MaxRepairResource,
                 Height            = 2,
                 Width             = 2,

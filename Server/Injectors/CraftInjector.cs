@@ -18,14 +18,14 @@ public class CraftInjector(
     ISptLogger<CraftInjector> logger,
     DebugLoggerUtil           debugLoggerUtil) {
     private static HideoutProduction CreateCraft(string itemId, string craftId, List<Requirement> requirements,
-                                                 int    productionTime) {
+                                                 int    productionTime, int count) {
         return new HideoutProduction {
             Id                           = craftId,
             EndProduct                   = itemId,
             Requirements                 = requirements,
             AreaType                     = HideoutAreas.Workbench,
             Continuous                   = false,
-            Count                        = 1,
+            Count                        = count,
             ProductionTime               = productionTime,
             ProductionLimitCount         = 1,
             IsEncoded                    = false,
@@ -51,7 +51,7 @@ public class CraftInjector(
                 continue;
             }
 
-            HideoutProduction productionItem = CreateCraft(itemId, craftId, craft.Requirements, craft.CraftTime);
+            HideoutProduction productionItem = CreateCraft(itemId, craftId, craft.Requirements, craft.CraftTime, craft.AmountCrafted);
 
             hideout.Production.Recipes.Add(productionItem);
 

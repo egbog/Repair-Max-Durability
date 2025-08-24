@@ -29,9 +29,10 @@ public record Config {
     }
 
     public record CraftStruct {
-        public required bool              Enabled      { get; init; }
-        public required int               CraftTime    { get; init; }
-        public required List<Requirement> Requirements { get; init; }
+        public required bool              Enabled       { get; init; }
+        public required int               CraftTime     { get; init; }
+        public required int               AmountCrafted { get; init; }
+        public required List<Requirement> Requirements  { get; init; }
     }
 
     public required int                FleaPrice         { get; init; }

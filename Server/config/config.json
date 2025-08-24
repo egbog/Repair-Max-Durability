@@ -23,6 +23,7 @@
     {
       "Enabled": true,
 	  "CraftTime": 3600,
+	  "AmountCrafted": 1,
       "Requirements": [
         {
           "type": "Tool",

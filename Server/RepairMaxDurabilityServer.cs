@@ -32,7 +32,7 @@ public class RepairMaxDurability(
     CustomItemService               customItem,
     GetConfig                       config,
     AssortService                   assortService,
-    CraftInjector                   craftInjector) : IOnLoad {
+    CraftService                    craftService) : IOnLoad {
     public Task OnLoad() {
         var metaData = new ModMetadata();
 
@@ -68,7 +68,7 @@ public class RepairMaxDurability(
         customItem.CreateItemFromClone(maxRepairKit);
 
         try {
-            craftInjector.InjectCraft(itemId, craftId);
+            craftService.AddCraft(itemId, craftId);
             assortService.AddAssort(itemId, assortId);
             logger.Success($"{metaData.Name} v{metaData.Version}: Loaded successfully");
         }

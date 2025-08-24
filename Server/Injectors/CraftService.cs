@@ -12,13 +12,13 @@ using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 namespace _RepairMaxDurability.Injectors;
 
 [Injectable(TypePriority = OnLoadOrder.TraderCallbacks + 1)]
-public class CraftInjector(
-    DatabaseService           db,
-    GetConfig                 config,
-    ISptLogger<CraftInjector> logger,
-    DebugLoggerUtil           debugLoggerUtil) {
-    private static HideoutProduction CreateCraft(string itemId, string craftId, List<Requirement> requirements,
-                                                 int    productionTime, int count) {
+public class CraftService(
+    DatabaseService          db,
+    GetConfig                config,
+    ISptLogger<CraftService> logger,
+    DebugLoggerUtil          debugLoggerUtil) {
+    private static HideoutProduction CreateCraft(string itemId,         string craftId, List<Requirement> requirements,
+                                                 int    productionTime, int    count) {
         return new HideoutProduction {
             Id                           = craftId,
             EndProduct                   = itemId,
@@ -35,7 +35,7 @@ public class CraftInjector(
         };
     }
 
-    public void InjectCraft(MongoId itemId, MongoId craftId) {
+    public void AddCraft(MongoId itemId, MongoId craftId) {
         var metaData = new ModMetadata();
 
         var count        = 0;
@@ -51,7 +51,8 @@ public class CraftInjector(
                 continue;
             }
 
-            HideoutProduction productionItem = CreateCraft(itemId, craftId, craft.Requirements, craft.CraftTime, craft.AmountCrafted);
+            HideoutProduction productionItem = CreateCraft(itemId, craftId, craft.Requirements, craft.CraftTime,
+                                                           craft.AmountCrafted);
 
             hideout.Production.Recipes.Add(productionItem);
 

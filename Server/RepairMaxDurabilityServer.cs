@@ -59,10 +59,6 @@ public class RepairMaxDurability(
                 }
             },
             OverrideProperties = new Props {
-                Name      = "Spare firearm parts",
-                ShortName = "Spare firearm parts",
-                Description =
-                    "Spare parts such as bolt carrier groups, firing pins and other common wear items. Enough to make approximately 5 repairs.",
                 Weight            = 1,
                 MaxRepairResource = config.MaxRepairResource,
                 Height            = 2,

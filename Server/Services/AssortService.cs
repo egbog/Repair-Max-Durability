@@ -8,7 +8,6 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
-using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace _RepairMaxDurability.Services;
 
@@ -19,8 +18,6 @@ public class AssortService(
     ISptLogger<AssortService> logger,
     DebugLoggerUtil           debugLoggerUtil) {
     public void AddAssort(MongoId itemId, MongoId assortId) {
-        var metaData = new ModMetadata();
-
         var count        = 0;
         var injectResult = "";
 
@@ -45,7 +42,7 @@ public class AssortService(
 
             AddItemAssort(itemAssort, traderAssort);
 
-            if (!logger.IsLogEnabled(LogLevel.Debug)) {
+            if (!RepairMaxDurability.Debug) {
                 continue;
             }
 
@@ -53,11 +50,11 @@ public class AssortService(
             injectResult += debugLoggerUtil.LogResult(assortConfig);
         }
 
-        if (!logger.IsLogEnabled(LogLevel.Debug)) {
+        if (!RepairMaxDurability.Debug) {
             return;
         }
 
-        logger.Debug($"{metaData.Name} v{metaData.Version}: Successfully injected {count} assort(s).");
+        logger.Debug($"{RepairMaxDurability.Mod.Name} v{RepairMaxDurability.Mod.Version}: Successfully injected {count} assort(s).");
         logger.Debug($"{injectResult}");
     }
 

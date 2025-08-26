@@ -7,6 +7,7 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services.Mod;
+using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace _RepairMaxDurability;
 
@@ -33,8 +34,10 @@ public class RepairMaxDurability(
     GetConfig                       config,
     AssortService                   assortService,
     CraftService                    craftService) : IOnLoad {
+    public static bool        Debug;
+    public static ModMetadata Mod = new();
     public Task OnLoad() {
-        var metaData = new ModMetadata();
+        Debug = config.Debug || logger.IsLogEnabled(LogLevel.Debug);
 
         MongoId itemId   = "86afd148ac929e6eddc5e370"; // repair kit id
         MongoId assortId = "db6e9955c9672e4fdd7e38ad"; // pregenerated mongoid
@@ -70,10 +73,10 @@ public class RepairMaxDurability(
         try {
             craftService.AddCraft(itemId, craftId);
             assortService.AddAssort(itemId, assortId);
-            logger.Success($"{metaData.Name} v{metaData.Version}: Loaded successfully");
+            logger.Success($"{Mod.Name} v{Mod.Version}: Loaded successfully");
         }
         catch (Exception ex) {
-            logger.Error($"{metaData.Name} v{metaData.Version}: Failed to inject crafts or assorts: [{ex.Message}]");
+            logger.Error($"{Mod.Name} v{Mod.Version}: Failed to inject crafts or assorts: [{ex.Message}]");
         }
 
         return Task.CompletedTask;

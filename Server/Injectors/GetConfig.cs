@@ -5,13 +5,14 @@ using SPTarkov.Server.Core.Models.Eft.Hideout;
 
 namespace _RepairMaxDurability.Injectors;
 
-[Injectable]
+[Injectable(InjectionType.Singleton)]
 public class GetConfig(ModHelper modHelper) {
     // Optionally expose the full config if needed
     public Config Config { get; } =
         modHelper.GetJsonDataFromFile<Config>(modHelper.GetAbsolutePathToModFolder(Assembly.GetExecutingAssembly()) + "/config",
                                               "config.json");
     // Forwarded properties
+    public bool                      Debug             { get => Config.Debug; }
     public int                       FleaPrice         { get => Config.FleaPrice; }
     public int                       MaxRepairResource { get => Config.MaxRepairResource; }
     public List<Config.TraderStruct> Traders           { get => Config.Traders; }
@@ -35,6 +36,7 @@ public record Config {
         public required List<Requirement> Requirements  { get; init; }
     }
 
+    public required bool               Debug             { get; init; }
     public required int                FleaPrice         { get; init; }
     public required int                MaxRepairResource { get; init; }
     public required List<TraderStruct> Traders           { get; init; }

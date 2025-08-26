@@ -1,4 +1,5 @@
 {
+  "Debug": false,
   "FleaPrice": 100000,
   "MaxRepairResource": 5,
   "Traders": [

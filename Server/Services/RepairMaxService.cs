@@ -6,7 +6,6 @@ using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
-using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace _RepairMaxDurability.Services;
 
@@ -62,7 +61,7 @@ public class RepairMaxService(DatabaseService db, RepairHelper repairHelper, ISp
         }
 
         if (repairKitInInventory.Upd is null) {
-            if (logger.IsLogEnabled(LogLevel.Debug)) {
+            if (RepairMaxDurability.Debug) {
                 logger.Debug($"Repair kit: {repairKitInInventory.Id} in inventory lacks upd object, adding");
             }
 

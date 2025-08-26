@@ -7,7 +7,6 @@ using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Hideout;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
-using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace _RepairMaxDurability.Injectors;
 
@@ -36,8 +35,6 @@ public class CraftService(
     }
 
     public void AddCraft(MongoId itemId, MongoId craftId) {
-        var metaData = new ModMetadata();
-
         var count        = 0;
         var injectResult = "";
 
@@ -52,7 +49,7 @@ public class CraftService(
 
             hideout.Production.Recipes.Add(productionItem);
 
-            if (!logger.IsLogEnabled(LogLevel.Debug)) {
+            if (!RepairMaxDurability.Debug) {
                 continue;
             }
 
@@ -60,11 +57,11 @@ public class CraftService(
             injectResult += debugLoggerUtil.LogResult(productionItem);
         }
 
-        if (!logger.IsLogEnabled(LogLevel.Debug)) {
+        if (!RepairMaxDurability.Debug) {
             return;
         }
 
-        logger.Debug($"{metaData.Name} v{metaData.Version}: Successfully injected {count} craft(s).");
+        logger.Debug($"{RepairMaxDurability.Mod.Name} v{RepairMaxDurability.Mod.Version}: Successfully injected {count} craft(s).");
         logger.Debug($"{injectResult}");
     }
 }

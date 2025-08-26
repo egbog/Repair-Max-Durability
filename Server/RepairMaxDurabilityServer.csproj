@@ -13,25 +13,18 @@
     <RunPostBuildEvent>Always</RunPostBuildEvent>
     <Configurations>Debug;Release;Source-Debug</Configurations>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="SPTarkov.Common" Version="4.0.0-prerelease26" />
-    <PackageReference Include="SPTarkov.DI" Version="4.0.0-prerelease26" />
-  </ItemGroup>
   
   <!-- Allow go to declaration using project source instead of decompiled source -->
   <ItemGroup Condition="'$(Configuration)'=='Source-Debug'">
     <ProjectReference Include="..\..\server-csharp\Libraries\SPTarkov.Server.Core\SPTarkov.Server.Core.csproj" />
+    <ProjectReference Include="..\..\server-csharp\Libraries\SPTarkov.Common\SPTarkov.Common.csproj" />
+    <ProjectReference Include="..\..\server-csharp\Libraries\SPTarkov.DI\SPTarkov.DI.csproj" />
   </ItemGroup>
   
   <ItemGroup Condition="'$(Configuration)'!='Source-Debug'">
     <PackageReference Include="SPTarkov.Server.Core" Version="4.0.0-prerelease26" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Logger\" />
-    <Folder Include="Controllers\" />
-    <Folder Include="Helpers\" />
+    <PackageReference Include="SPTarkov.Common" Version="4.0.0-prerelease26" />
+    <PackageReference Include="SPTarkov.DI" Version="4.0.0-prerelease26" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

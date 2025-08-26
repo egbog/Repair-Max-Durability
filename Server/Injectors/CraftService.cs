@@ -61,7 +61,6 @@ public class CraftService(
             return;
         }
 
-        logger.Debug($"{RepairMaxDurability.Mod.Name} v{RepairMaxDurability.Mod.Version}: Successfully injected {count} craft(s).");
-        logger.Debug($"{injectResult}");
+        logger.Debug($"{RepairMaxDurability.Mod.Name} v{RepairMaxDurability.Mod.Version}: Successfully injected {count} craft(s).\n{injectResult}");
     }
 }

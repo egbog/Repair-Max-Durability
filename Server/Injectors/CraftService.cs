@@ -43,7 +43,7 @@ public class CraftService(
             throw new Exception("Unable to find hideout recipes. Profile may be corrupt.");
         }
 
-        foreach (Config.CraftStruct craft in config.Crafts.Where(x => x.Enabled)) {
+        foreach (CraftStruct craft in config.Crafts.Where(x => x.Enabled)) {
             HideoutProduction productionItem = CreateCraft(itemId, craftId, craft.Requirements, craft.CraftTime,
                                                            craft.AmountCrafted);
 

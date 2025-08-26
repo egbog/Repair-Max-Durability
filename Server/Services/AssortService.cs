@@ -25,7 +25,7 @@ public class AssortService(
         Dictionary<MongoId, TemplateItem> itemsDict = db.GetItems();
         Dictionary<MongoId, Trader>       traders   = db.GetTraders();
 
-        foreach (Config.TraderStruct assortConfig in config.Traders.Where(assortConfig => assortConfig.Enabled)) {
+        foreach (TraderStruct assortConfig in config.Traders.Where(assortConfig => assortConfig.Enabled)) {
             // fetch trader
             (MongoId traderId, Trader trader) = traders.FirstOrDefault(x => x.Value.Base.Nickname == assortConfig.Name);
             if (trader == null) {

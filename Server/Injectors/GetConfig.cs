@@ -12,16 +12,14 @@ public class GetConfig(ModHelper modHelper) {
         modHelper.GetJsonDataFromFile<Config>(modHelper.GetAbsolutePathToModFolder(Assembly.GetExecutingAssembly()) +
                                               "/config", "config.json");
     // Forwarded properties
-    public bool                      Debug             { get => Config.Debug; }
-    public int                       FleaPrice         { get => Config.FleaPrice; }
-    public int                       MaxRepairResource { get => Config.MaxRepairResource; }
+    public bool               Debug             { get => Config.Debug; }
+    public int                FleaPrice         { get => Config.FleaPrice; }
+    public int                MaxRepairResource { get => Config.MaxRepairResource; }
     public List<TraderStruct> Traders           { get => Config.Traders; }
     public List<CraftStruct>  Crafts            { get => Config.Crafts; }
 }
 
 public record Config {
-    
-
     public required bool               Debug             { get; init; }
     public required int                FleaPrice         { get; init; }
     public required int                MaxRepairResource { get; init; }

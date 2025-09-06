@@ -12,19 +12,17 @@ using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 namespace _RepairMaxDurability;
 
 public record ModMetadata : AbstractModMetadata {
-    public override string                      ModGuid           { get; init; } = "com.egbog.repairmaxdurability";
-    public override string                      Name              { get; init; } = "RepairMaxDurability";
-    public override string                      Author            { get; init; } = "egbog";
-    public override List<string>?               Contributors      { get; set; }
-    public override string                      Version           { get; init; } = "0.0.1";
-    public override string                      SptVersion        { get; init; } = "4.0.0";
-    public override List<string>?               LoadBefore        { get; set; }
-    public override List<string>?               LoadAfter         { get; set; }
-    public override List<string>?               Incompatibilities { get; set; }
-    public override Dictionary<string, string>? ModDependencies   { get; set; }
-    public override string?                     Url               { get; set; } = "https://github.com/egbog/Repair-Max-Durability";
-    public override bool?                       IsBundleMod       { get; set; }  = false;
-    public override string                      License           { get; init; } = "MIT";
+    public override string                                          ModGuid           { get; init; } = "com.egbog.repairmaxdurability";
+    public override string                                          Name              { get; init; } = "RepairMaxDurability";
+    public override string                                          Author            { get; init; } = "egbog";
+    public override List<string>?                                   Contributors      { get; init; }
+    public override SemanticVersioning.Version                      Version { get; init; } = new("0.0.1"); 
+    public override SemanticVersioning.Version                      SptVersion { get; init; } = new("4.0.0");
+    public override List<string>?                                   Incompatibilities { get; init; }
+    public override Dictionary<string, SemanticVersioning.Version>? ModDependencies { get; init; } = new();
+    public override string?                                         Url               { get; init; }  = "https://github.com/egbog/Repair-Max-Durability";
+    public override bool?                                           IsBundleMod       { get; init; }  = false;
+    public override string                                          License           { get; init; } = "MIT";
 }
 
 [Injectable(TypePriority = OnLoadOrder.TraderCallbacks + 1)]

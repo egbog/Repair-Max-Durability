@@ -59,7 +59,7 @@ public class RepairMaxDurability(
                     }
                 }
             },
-            OverrideProperties = new Props {
+            OverrideProperties = new TemplateItemProperties {
                 Weight            = 1.4,
                 MaxRepairResource = config.MaxRepairResource,
                 Width             = 2

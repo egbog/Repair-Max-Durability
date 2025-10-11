@@ -22,9 +22,9 @@
   </ItemGroup>
   
   <ItemGroup Condition="'$(Configuration)'!='Source-Debug'">
-    <PackageReference Include="SPTarkov.Server.Core" Version="4.0.0-pre.20250905.1821" />
-    <PackageReference Include="SPTarkov.Common" Version="4.0.0-pre.20250905.1821" />
-    <PackageReference Include="SPTarkov.DI" Version="4.0.0-pre.20250905.1821" />
+    <PackageReference Include="SPTarkov.Server.Core" Version="4.0.0" />
+    <PackageReference Include="SPTarkov.Common" Version="4.0.0" />
+    <PackageReference Include="SPTarkov.DI" Version="4.0.0" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

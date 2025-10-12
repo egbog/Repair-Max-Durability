@@ -9,7 +9,7 @@ This mod attempts to introduce a lore-friendly alternative to stripping attachme
 The simplest solution is to use the existing framework for weapon repairs and allow the repair to target the maximum durability instead. Lore-wise, a repair kit containing those crtical components that are then swapped out on the chosen weapon makes perfect sense and almost should be implemented in live EFT itself, albeit in a different fashion.
 
 ## Obtaining
-Spare Firearm Parts can be crafted at Workbench lvl 1 using a Leatherman Multitool and 1 Weapon Parts.
+Spare Firearm Parts can be crafted at Workbench lvl 1 using a Toolset (keep), 1 #FireKlean gun lube and 1 Weapon Parts.
 They can also be purchased from Mechanic LL2 and Flea.
 
 ## Usage
@@ -53,45 +53,28 @@ The default config only has one craft defined. ``Tool`` is an optional item that
 
 ```json
 "Crafts": [
-    {
-      "Enabled": true,
-      "CraftTime": 1200,
-      "Requirements": [
-        {
-          "type": "Tool",
-          "templateId": "544fb5454bdc2df8738b456a"
-        },
-        {
-          "type": "Item",
-          "templateId": "5d1c819a86f774771b0acd6c",
-          "isFunctional": false,
-          "count": 1
-        },
-        {
-          "type": "Area",
-          "areaType": 10,
-          "requiredLevel": 1
-        }
-      ]
-    },
-    {
+   { 
+      "default craft here..."
+  },
+  {
       "Enabled": true,
       "CraftTime": 69420,
+      "AmountCrafted": 100,
       "Requirements": [
-        {
-          "type": "Item",
-          "templateId": "5d1c819a86f774771b0acd6c",
-          "isFunctional": false,
-          "count": 5
-        },
-        {
-          "type": "Area",
-          "areaType": 10,
-          "requiredLevel": 3
-        }
-      ]
-    }
-  ]
+      {
+        "type": "Item",
+        "templateId": "your_mongoid_here",
+        "isFunctional": false,
+        "count": 10
+      },
+      {
+        "type": "Area",
+        "areaType": 10,
+        "requiredLevel": 3
+      }
+    ]
+  }
+]
 ```
 
 ## Known Issues

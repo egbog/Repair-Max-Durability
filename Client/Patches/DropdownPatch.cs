@@ -12,7 +12,7 @@ public class ShowRepairWindowPatch : ModulePatch {
     }
 
     [PatchPostfix]
-    public static void Postfix(ref IEnumerable<GClass902> __result) {
+    public static void Postfix(ref IEnumerable<GClass904> __result) {
         // this was way more complicated than it needed to be...
         __result = __result.Where(x => x.RepairKitsTemplateClass._id != "86afd148ac929e6eddc5e370").ToList();
     }

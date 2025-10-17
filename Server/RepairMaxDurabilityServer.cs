@@ -25,7 +25,7 @@ public record ModMetadata : AbstractModMetadata {
     public override string                                          License           { get; init; } = "MIT";
 }
 
-[Injectable(TypePriority = OnLoadOrder.TraderCallbacks + 1)]
+[Injectable(TypePriority = OnLoadOrder.PostDBModLoader + 1)]
 public class RepairMaxDurability(
     ISptLogger<RepairMaxDurability> logger,
     CustomItemService               customItem,

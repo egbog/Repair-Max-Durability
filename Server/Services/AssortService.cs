@@ -11,7 +11,7 @@ using SPTarkov.Server.Core.Services;
 
 namespace _RepairMaxDurability.Services;
 
-[Injectable(TypePriority = OnLoadOrder.TraderCallbacks + 1)]
+[Injectable(TypePriority = OnLoadOrder.PostDBModLoader + 1)]
 public class AssortService(
     DatabaseService           db,
     GetConfig                 config,

@@ -10,7 +10,7 @@ using SPTarkov.Server.Core.Services;
 
 namespace _RepairMaxDurability.Injectors;
 
-[Injectable(TypePriority = OnLoadOrder.TraderCallbacks + 1)]
+[Injectable(TypePriority = OnLoadOrder.PostDBModLoader + 1)]
 public class CraftService(
     DatabaseService          db,
     GetConfig                config,

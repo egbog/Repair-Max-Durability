@@ -30,7 +30,7 @@ public class Plugin : BaseUnityPlugin {
     }
 
     private IEnumerator CheckMenuIsLoadedRoutine() {
-        WaitForSecondsRealtime wait = new(5f);
+        WaitForSecondsRealtime wait = new(4f);
         while (true) {
             // Scene is a value type so we have to get the scene every time...
             Scene s = SceneManager.GetActiveScene();

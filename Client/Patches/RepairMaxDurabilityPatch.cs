@@ -48,6 +48,7 @@ public class RepairMaxDurabilityPatch : ModulePatch {
         }
 
         // check if the durability is below 100
+
         if (Mathf.Approximately(repairableComponent.MaxDurability, 100f)) // item already at 100 max durability
         {
             Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.ErrorMessage);
@@ -59,8 +60,11 @@ public class RepairMaxDurabilityPatch : ModulePatch {
             return false;
         }
 
+        // need more precision
+        //if (!Mathf.Approximately(repairableComponent.Durability, repairableComponent.MaxDurability)) {
+
         // current durability is not at the maximum it can be at the moment
-        if (!Mathf.Approximately(repairableComponent.Durability, repairableComponent.MaxDurability)) {
+        if (Mathf.Abs(1.0f - repairableComponent.RelativeValue) >= 0.01f) {
             Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.ErrorMessage);
             NotificationManagerClass.DisplayMessageNotification("Weapon not clean enough to install new parts",
                                                                 ENotificationDurationType.Default,

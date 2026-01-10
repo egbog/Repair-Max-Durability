@@ -23,7 +23,7 @@ public class RepairMaxService(DatabaseService db, RepairHelper repairHelper, ISp
         TemplateItem                      itemToRepairTemplate  = itemsDict[itemToRepair.Template];
         TemplateItem                      repairKitTemplateItem = itemsDict[repairKit.Template];
 
-        double amountToRepair = 100 - itemToRepair.Upd?.Repairable?.Durability ?? 0;
+        double amountToRepair = 100 - itemToRepair.Upd?.Repairable?.MaxDurability ?? 0;
         itemToRepair.Upd.Repairable.MaxDurability += amountToRepair;
 
         repairHelper.UpdateItemDurability(itemToRepair, itemToRepairTemplate, false, amountToRepair, true, 1, false);

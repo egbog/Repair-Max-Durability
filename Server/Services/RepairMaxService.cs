@@ -23,7 +23,11 @@ public class RepairMaxService(DatabaseService db, RepairHelper repairHelper, ISp
         TemplateItem                      itemToRepairTemplate  = itemsDict[itemToRepair.Template];
         TemplateItem                      repairKitTemplateItem = itemsDict[repairKit.Template];
 
-        double amountToRepair = 100 - itemToRepair.Upd?.Repairable?.MaxDurability ?? 0;
+        if (itemToRepair.Upd?.Repairable?.MaxDurability == null) {
+            throw new Exception($"Property MaxDurability of item {itemToRepair.Id} is null");
+        }
+
+        var amountToRepair = (double)(100 - itemToRepair.Upd.Repairable.MaxDurability);
         itemToRepair.Upd.Repairable.MaxDurability += amountToRepair;
 
         repairHelper.UpdateItemDurability(itemToRepair, itemToRepairTemplate, false, amountToRepair, true, 1, false);
@@ -32,6 +36,10 @@ public class RepairMaxService(DatabaseService db, RepairHelper repairHelper, ISp
         // for some reason crafted kits don't contain a "RepairKit" component in upd
         // so just workaround add it ourselves
         AddMaxResourceToKitIfMissing(repairKitTemplateItem, repairKit);
+
+        if (repairKit.Upd?.RepairKit?.Resource == null) {
+            throw new Exception($"Property Resource of item {repairKit.Id} is null");
+        }
 
         repairKit.Upd.RepairKit.Resource--;
 

@@ -14,7 +14,7 @@ switch ($Configuration) {
     }
 }
 
-$sptPath = Join-Path (Get-Item $scriptDir).Parent.Parent.FullName "server-csharp\SPTarkov.Server\bin\$Configuration\net10.0"
+$sptPath = Join-Path (Get-Item $scriptDir).Parent.Parent.FullName "server-csharp\SPTarkov.Server\bin\$Configuration\net9.0"
 $sptUserModsPath = Join-Path $sptPath "user/mods"
 
 # Ensure target directory exists

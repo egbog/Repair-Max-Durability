@@ -33,7 +33,7 @@ public class RepairMaxDurability(
     AssortService                   assortService,
     CraftService                    craftService) : IOnLoad {
     public static bool        Debug;
-    public static ModMetadata Mod = new();
+    public static readonly ModMetadata Mod = new();
     public async Task OnLoad() {
         Debug = config.Debug || logger.IsLogEnabled(LogLevel.Debug);
 

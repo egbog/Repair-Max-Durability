@@ -54,7 +54,7 @@ public class AssortService(
             return;
         }
 
-        logger.Debug($"{RepairMaxDurability.Mod.Name} v{RepairMaxDurability.Mod.Version}: Successfully injected {count} assort(s).\n{injectResult}");
+        logger.Debug($"[{RepairMaxDurability.Mod.Name}] Successfully injected {count} assort(s).\n{injectResult}");
     }
 
     protected TraderAssort GetTraderAssortRef(MongoId traderId) {

@@ -22,7 +22,7 @@ public static class AssortHelperExtensions {
         return (CurrencyType)trader.Base.Currency;
     }
 
-    public static ItemAssort CreateAssort(MongoId             itemId,       MongoId assortId, CurrencyType currencyType,
+    public static ItemAssort CreateAssort(MongoId      itemId,       MongoId      assortId, CurrencyType currencyType,
                                           TraderStruct assortConfig, TemplateItem templateitem) {
         return new ItemAssort {
             AssortItem = new Item {

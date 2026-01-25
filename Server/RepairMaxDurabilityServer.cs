@@ -32,7 +32,7 @@ public class RepairMaxDurability(
     GetConfig                       config,
     AssortService                   assortService,
     CraftService                    craftService) : IOnLoad {
-    public static bool        Debug;
+    public static          bool        Debug;
     public static readonly ModMetadata Mod = new();
     public async Task OnLoad() {
         Debug = config.Debug || logger.IsLogEnabled(LogLevel.Debug);

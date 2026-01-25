@@ -74,6 +74,7 @@ public class RepairMaxDurability(
             logger.Success($"[{Mod.Name}] Loaded successfully");
         }
         catch (Exception ex) {
+            logger.Error($"[{Mod.Name}] Failed to inject crafts or assorts: [{ex.Message}]");
         }
 
         return Task.CompletedTask;

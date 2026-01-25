@@ -8,14 +8,13 @@ using SPTarkov.Server.Core.Utils;
 namespace _RepairMaxDurability.Static_Routers;
 
 [Injectable]
-public class RepairMaxRouter : StaticRouter {
-    public RepairMaxRouter(JsonUtil jsonUtil, RepairMaxCallback repairMaxCallback) : base(jsonUtil,
+public class RepairMaxRouter(JsonUtil jsonUtil, RepairMaxCallback repairMaxCallback)
+    : StaticRouter(jsonUtil,
     [
         new RouteAction<RepairDataRequest>("/maxdura/checkdragged",
                                            async (url, info, sessionId, _) =>
                                                await repairMaxCallback.RepairMax(url, info, sessionId))
-    ]) { }
-}
+    ]);
 
 public record RepairDataRequest : IRequestData {
     public required MongoId ItemId { get; init; }

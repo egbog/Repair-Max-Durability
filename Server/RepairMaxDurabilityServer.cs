@@ -34,7 +34,7 @@ public class RepairMaxDurability(
     CraftService                    craftService) : IOnLoad {
     public static bool        Debug;
     public static ModMetadata Mod = new();
-    public Task OnLoad() {
+    public async Task OnLoad() {
         Debug = config.Debug || logger.IsLogEnabled(LogLevel.Debug);
 
         MongoId itemId   = "86afd148ac929e6eddc5e370"; // repair kit id
@@ -77,6 +77,6 @@ public class RepairMaxDurability(
             logger.Error($"[{Mod.Name}] Failed to inject crafts or assorts: [{ex.Message}]");
         }
 
-        return Task.CompletedTask;
+        await Task.CompletedTask;
     }
 }

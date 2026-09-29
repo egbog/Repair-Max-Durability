@@ -4,11 +4,26 @@ using Newtonsoft.Json;
 
 namespace _RepairMaxDurability.ServerJsonStructures;
 
-public interface IRepairDataResponse { }
+public class ItemEventData {
+    [JsonProperty("warnings")]
+    public List<Warning> Warnings { get; set; }
+    [JsonProperty("profileChanges")]
+    public Dictionary<string, ProfileChange> ProfileChanges { get; set; }
+}
 
-public record RepairDataResponse : IRepairDataResponse {
-    [JsonProperty("data")]
-    public List<Items> Items { get; set; }
+public class ProfileChange {
+    [JsonProperty("items")]
+    public ItemChanges Items { get; set; }
+}
+
+public class ItemChanges {
+    [JsonProperty("change")]
+    public List<Items> Change { get; set; } // ← reuse your existing item POCO
+}
+
+public class Warning {
+    [JsonProperty("errmsg")]
+    public string ErrorMessage { get; set; }
 }
 
 public record Items {

@@ -1,6 +1,4 @@
 ﻿#nullable enable
-using System;
-using System.Reflection;
 using _RepairMaxDurability.ServerJsonStructures;
 using _RepairMaxDurability.Utils;
 using Comfort.Common;
@@ -9,6 +7,10 @@ using EFT.InventoryLogic;
 using EFT.UI;
 using EFT.UI.DragAndDrop;
 using SPT.Reflection.Patching;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -77,15 +79,27 @@ public class RepairMaxDurabilityPatch : ModulePatch {
         // if code runs to here, then we satisfied all conditions to start the repair process
 
         // setup json to send to server
-        var request = new RepairDataRequest { ItemId = targetItem.Id, KitId = dragItemContext.Item.Id };
+        var request = new ItemEventRequest {
+            Data = [new RepairAction { Item = targetItem.Id, Kit = dragItemContext.Item.Id }], Tm = 0, Reload = 0
+        };
 
         try {
             // get data back from server
-            RepairDataResponse response =
-                RequestHandler.SendRequest<RepairDataResponse>("/maxdura/checkdragged", request);
+            GenericParsedJsonResponseClass<ItemEventData>? response =
+                RequestHandler
+                    .SendRequest<GenericParsedJsonResponseClass<ItemEventData>?>("/client/game/profile/items/moving",
+                        request);
+
+            if (response.data.Warnings?.Count > 0) {
+                throw new Exception($"Error: {response.data.Warnings[0].ErrorMessage}");
+            }
+
+            // there's exactly one profileChanges entry (your session)
+            List<Items>? changed = response.data.ProfileChanges.Values.First().Items.Change;
 
             // set durability and repair kit resource
-            ResponseHandler.UpdateValues(response, repairableComponent, dragItemContext.Item);
+            ResponseHandler.UpdateValues(changed, repairableComponent, dragItemContext.Item);
+
             // sound and notification
             Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.RepairComplete);
             NotificationManagerClass.DisplayMessageNotification($"{"Weapon successfully repaired to"
@@ -97,7 +111,7 @@ public class RepairMaxDurabilityPatch : ModulePatch {
             NotificationManagerClass.DisplayMessageNotification("Repair failed: Server error",
                                                                 ENotificationDurationType.Default,
                                                                 ENotificationIconType.Alert);
-            Plugin.Log.LogError(ex.Message);
+            Plugin.Log.LogError(ex);
         }
 
         // whether repair fails or completes

@@ -1,13 +1,15 @@
-﻿using System;
+﻿#nullable enable
+using System;
+using System.Collections.Generic;
 using _RepairMaxDurability.ServerJsonStructures;
 using EFT.InventoryLogic;
 
 namespace _RepairMaxDurability.Utils;
 
 public class ResponseHandler {
-    public static void UpdateValues(RepairDataResponse repairDataResponse, RepairableComponent targetItemRc,
-                                    Item               repairKit) {
-        if (repairDataResponse.Items.Find(i => i.Id == targetItemRc.Item.Id) is { } item) {
+    public static void UpdateValues(List<Items>? changed, RepairableComponent targetItemRc,
+                                    Item         repairKit) {
+        if (changed?.Find(i => i.Id == targetItemRc.Item.Id) is { } item) {
             targetItemRc.Durability    = item.Upd.Repairable.Durability;
             targetItemRc.MaxDurability = item.Upd.Repairable.MaxDurability;
             targetItemRc.Item.UpdateAttributes();
@@ -20,7 +22,7 @@ public class ResponseHandler {
         }
 
         // update repair kit resource
-        if (repairDataResponse.Items.Find(i => i.Id == repairKit.Id) is { } kit) {
+        if (changed?.Find(i => i.Id == repairKit.Id) is { } kit) {
             repairKit.TryGetItemComponent(out RepairKitComponent repairKitComponent);
             repairKitComponent.Resource = kit.Upd.RepairKit.Resource;
             repairKit.UpdateAttributes();

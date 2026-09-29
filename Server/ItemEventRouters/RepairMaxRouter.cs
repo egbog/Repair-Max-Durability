@@ -21,7 +21,7 @@ public class RepairMaxRouter(RepairMaxController repairMaxController) : ItemEven
 
         List<Item?> items = repairMaxController.RepairMaxWithKit(req, sessionID, pmcData);
         
-        foreach (Item? item in items.OfType<Item>())
+        foreach (Item item in items.OfType<Item>())
         {
             output.ProfileChanges[sessionID].Items.ChangedItems.Add(item);
         }

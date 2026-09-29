@@ -22,7 +22,7 @@ public class ResponseHandler {
         }
 
         // update repair kit resource
-        if (changed?.Find(i => i.Id == repairKit.Id) is { } kit) {
+        if (changed.Find(i => i.Id == repairKit.Id) is { } kit) {
             repairKit.TryGetItemComponent(out RepairKitComponent repairKitComponent);
             repairKitComponent.Resource = kit.Upd.RepairKit.Resource;
             repairKit.UpdateAttributes();

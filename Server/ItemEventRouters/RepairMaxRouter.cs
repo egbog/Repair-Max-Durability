@@ -19,7 +19,7 @@ public sealed class RepairMaxRouter(RepairMaxController repairMaxController) : I
                                                    output.ProfileChanges[sessionID].Items?.ChangedItems?.Add(item);
                                                return output; // adjust type to match expected return
                                            })
-]) { }
+]);
 
 
 public record RepairDataRequest : BaseInteractionRequestData {

@@ -1,16 +1,17 @@
 using _RepairMaxDurability.ItemEventRouters;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
-using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Helpers.Ragfair;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
-using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Models.Spt.Tables;
+using SPTarkov.Server.Core.Services.Commerce;
 
 namespace _RepairMaxDurability.Services;
 
 [Injectable]
-public class RepairMaxService(DatabaseService db, RepairHelper repairHelper, ISptLogger<RepairMaxService> logger) {
+public class RepairMaxService(TemplateTable tb, RepairHelper repairHelper, ISptLogger<RepairMaxService> logger) {
     public (RepairDetails repairDetails, Item repairKit) RepairMaxItemByKit(
         RepairDataRequest dataRequest, MongoId sessionId, PmcData pmcData) {
         Item itemToRepair = pmcData.Inventory?.Items?.FirstOrDefault(x => x.Id == dataRequest.ItemId) ??
@@ -19,7 +20,7 @@ public class RepairMaxService(DatabaseService db, RepairHelper repairHelper, ISp
         Item repairKit = pmcData.Inventory?.Items?.FirstOrDefault(x => x.Id == dataRequest.KitId) ??
                          throw new Exception($"Repair kit {dataRequest.KitId} not found in inventory.");
 
-        Dictionary<MongoId, TemplateItem> itemsDict             = db.GetItems();
+        Dictionary<MongoId, TemplateItem> itemsDict             = tb.Items;
         TemplateItem                      itemToRepairTemplate  = itemsDict[itemToRepair.Template];
         TemplateItem                      repairKitTemplateItem = itemsDict[repairKit.Template];
 

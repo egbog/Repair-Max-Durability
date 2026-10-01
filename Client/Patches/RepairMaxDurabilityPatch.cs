@@ -6,7 +6,6 @@ using EFT.Communications;
 using EFT.InventoryLogic;
 using EFT.UI;
 using EFT.UI.DragAndDrop;
-using RuntimeInspector;
 using SPT.Reflection.Patching;
 using System;
 using System.Collections.Generic;

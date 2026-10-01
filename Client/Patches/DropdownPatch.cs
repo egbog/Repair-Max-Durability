@@ -16,7 +16,7 @@ public class ShowRepairWindowPatch : ModulePatch {
     [PatchPostfix]
     public static void Postfix(ref IEnumerable<RepairKitsCollection> __result) {
         // this was way more complicated than it needed to be...
-        __result = __result.Where(x => x.RepairerId!= Plugin.KitId).ToList();
+        __result = [.. __result.Where(x => x.RepairerId != Plugin.KitId)];
     }
 }
 

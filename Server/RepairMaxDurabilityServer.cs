@@ -6,26 +6,24 @@ using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Spt.Mod;
-using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Server.Core.Services.Mod;
+using SPTarkov.Server.Core.Services.Modding;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Server.Core.Utils.Json.Converters;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace _RepairMaxDurability;
 
-public record ModMetadata : AbstractModMetadata {
-    public override string ModGuid { get; init; } = "com.egbog.repairmaxdurability";
-    public override string Name { get; init; } = "RepairMaxDurability";
-    public override string Author { get; init; } = "egbog";
-    public override List<string>? Contributors { get; init; }
-    public override SemanticVersioning.Version Version { get; init; } = new("2.1.0");
-    public override SemanticVersioning.Range SptVersion { get; init; } = new("~4.0.0");
-    public override List<string>? Incompatibilities { get; init; }
-    public override Dictionary<string, SemanticVersioning.Range>? ModDependencies { get; init; }
-    public override string? Url { get; init; } = "https://github.com/egbog/Repair-Max-Durability";
-    public override bool? IsBundleMod { get; init; } = false;
-    public override string License { get; init; } = "MIT";
+public record ModMetadata : IModMetadata {
+    public string ModGuid { get; init; } = "com.egbog.repairmaxdurability";
+    public string Name { get; init; } = "RepairMaxDurability";
+    public string Author { get; init; } = "egbog";
+    public List<string>? Contributors { get; init; }
+    public SemanticVersioning.Version Version { get; init; } = new("2.1.0");
+    public SemanticVersioning.Range SptVersion { get; init; } = new("~4.0.0");
+    public List<string>? Incompatibilities { get; init; }
+    public Dictionary<string, SemanticVersioning.Range>? ModDependencies { get; init; }
+    public string? Url { get; init; } = "https://github.com/egbog/Repair-Max-Durability";
+    public string License { get; init; } = "MIT";
+    public bool HasPrepatcher { get; init; } = false;
 }
 
 [Injectable(TypePriority = OnLoadOrder.PostDBModLoader + 1)]

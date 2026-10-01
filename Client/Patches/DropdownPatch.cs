@@ -3,18 +3,20 @@ using SPT.Reflection.Patching;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using EFT.InventoryLogic;
+using EFT.Repairing;
 
 namespace _RepairMaxDurability.Patches;
 
 public class ShowRepairWindowPatch : ModulePatch {
     protected override MethodBase GetTargetMethod() {
-        return typeof(RepairControllerClass).GetMethod("method_1", BindingFlags.Instance | BindingFlags.Public);
+        return typeof(RepairController).GetMethod("GetSuitableRepairersCollections", BindingFlags.Instance | BindingFlags.Public);
     }
 
     [PatchPostfix]
-    public static void Postfix(ref IEnumerable<GClass904> __result) {
+    public static void Postfix(ref IEnumerable<RepairKitsCollection> __result) {
         // this was way more complicated than it needed to be...
-        __result = __result.Where(x => x.RepairKitsTemplateClass._id != Plugin.KitId).ToList();
+        __result = __result.Where(x => x.RepairerId!= Plugin.KitId).ToList();
     }
 }
 
@@ -24,7 +26,7 @@ public class RepairerParametersPanelRefreshPatch : ModulePatch {
     }
 
     [PatchPrefix]
-    public static bool Prefix(RepairKitsItemClass repairKit) {
-        return repairKit.RepairKitsTemplateClass._id != Plugin.KitId;
+    public static bool Prefix(RepairKit repairKit) {
+        return repairKit.RepairKitTemplate._id != Plugin.KitId;
     }
 }

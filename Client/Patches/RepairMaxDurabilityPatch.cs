@@ -6,11 +6,13 @@ using EFT.Communications;
 using EFT.InventoryLogic;
 using EFT.UI;
 using EFT.UI.DragAndDrop;
+using RuntimeInspector;
 using SPT.Reflection.Patching;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using EFT;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -22,15 +24,15 @@ public class RepairMaxDurabilityPatch : ModulePatch {
     }
 
     [PatchPrefix]
-    public static bool Prefix(ItemContextClass dragItemContext, PointerEventData eventData) {
+    public static bool Prefix(DragItemContext dragItemContext, PointerEventData eventData) {
         // make sure item is dragged onto another item, prevent null pointers
         if (!eventData.pointerEnter) {
             return true; // return and run original method
         }
 
-        ItemView?                 componentInParent = eventData.pointerEnter.GetComponentInParent<ItemView>();
-        ItemContextAbstractClass? targetItemContextAbstractClass = componentInParent?.ItemContext;
-        Item?                     targetItem = targetItemContextAbstractClass?.Item;
+        ItemView?    componentInParent = eventData.pointerEnter.GetComponentInParent<ItemView>();
+        ItemContext? targetItemContext = componentInParent?.ItemContext;
+        Item?        targetItem        = targetItemContext?.Item;
 
         // check target item ownership
         if (targetItem == null || targetItem.Owner.OwnerType != EOwnerType.Profile) {
@@ -54,9 +56,9 @@ public class RepairMaxDurabilityPatch : ModulePatch {
         if (Mathf.Approximately(repairableComponent.MaxDurability, 100f)) // item already at 100 max durability
         {
             Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.ErrorMessage);
-            NotificationManagerClass.DisplayMessageNotification("Weapon already at maximum durability",
-                                                                ENotificationDurationType.Default,
-                                                                ENotificationIconType.Alert);
+            NotificationManager.DisplayMessageNotification("Weapon already at maximum durability",
+                                                           ENotificationDurationType.Default,
+                                                           ENotificationIconType.Alert);
             dragItemContext.DragCancelled();
             //Plugin.Log.LogInfo("NO REPAIR NECESSARY");
             return false;
@@ -68,9 +70,9 @@ public class RepairMaxDurabilityPatch : ModulePatch {
         // current durability is not at the maximum it can be at the moment
         if (Mathf.Abs(1.0f - repairableComponent.RelativeValue) >= 0.01f) {
             Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.ErrorMessage);
-            NotificationManagerClass.DisplayMessageNotification("Weapon not clean enough to install new parts",
-                                                                ENotificationDurationType.Default,
-                                                                ENotificationIconType.Alert);
+            NotificationManager.DisplayMessageNotification("Weapon not clean enough to install new parts",
+                                                           ENotificationDurationType.Default,
+                                                           ENotificationIconType.Alert);
             dragItemContext.DragCancelled();
             //Plugin.Log.LogInfo("WEAPON NOT REPAIRED ENOUGH");
             return false;
@@ -85,32 +87,32 @@ public class RepairMaxDurabilityPatch : ModulePatch {
 
         try {
             // get data back from server
-            GenericParsedJsonResponseClass<ItemEventData>? response =
+            JsonResponse<ItemEventData>? response =
                 RequestHandler
-                    .SendRequest<GenericParsedJsonResponseClass<ItemEventData>?>("/client/game/profile/items/moving",
-                        request);
+                    .SendRequest<JsonResponse<ItemEventData>?>("/client/game/profile/items/moving",
+                                                               request);
 
-            if (response.data.Warnings?.Count > 0) {
+            if (response?.data.Warnings?.Count > 0) {
                 throw new Exception($"Error: {response.data.Warnings[0].ErrorMessage}");
             }
 
             // there's exactly one profileChanges entry (your session)
-            List<Items>? changed = response.data.ProfileChanges.Values.First().Items.Change;
+            List<Items>? changed = response?.data.ProfileChanges.Values.First().Items.Change;
 
             // set durability and repair kit resource
             ResponseHandler.UpdateValues(changed, repairableComponent, dragItemContext.Item);
 
             // sound and notification
             Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.RepairComplete);
-            NotificationManagerClass.DisplayMessageNotification($"{"Weapon successfully repaired to"
+            NotificationManager.DisplayMessageNotification($"{"Weapon successfully repaired to"
                 .Localized()} {repairableComponent.MaxDurability:F1}");
             //Plugin.Log.LogInfo("REPAIR SUCCESSFUL");
         }
         catch (Exception ex) {
             Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.ErrorMessage);
-            NotificationManagerClass.DisplayMessageNotification("Repair failed: Server error",
-                                                                ENotificationDurationType.Default,
-                                                                ENotificationIconType.Alert);
+            NotificationManager.DisplayMessageNotification("Repair failed: Server error",
+                                                           ENotificationDurationType.Default,
+                                                           ENotificationIconType.Alert);
             Plugin.Log.LogError(ex);
         }
 

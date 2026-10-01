@@ -12,6 +12,7 @@ using BepInEx;
 using BepInEx.Logging;
 using Comfort.Common;
 using EFT;
+using EFT.Repairing;
 using UnityEngine;
 
 namespace _RepairMaxDurability;
@@ -35,10 +36,10 @@ public class Plugin : BaseUnityPlugin {
     private IEnumerator CheckMenuIsLoadedRoutine() {
         WaitForSecondsRealtime wait = new(4f);
         while (true) {
-            BackendConfigSettingsClass cfg = Singleton<BackendConfigSettingsClass>.Instance;
+            GlobalConfiguration cfg = Singleton<GlobalConfiguration>.Instance;
             if (cfg is { SkillsSettings: not null, RepairSettings: not null }) {
                 // run cctor NOW, singleton is ready
-                RuntimeHelpers.RunClassConstructor(typeof(RepairControllerClass).TypeHandle);
+                RuntimeHelpers.RunClassConstructor(typeof(RepairController).TypeHandle);
                 new ShowRepairWindowPatch().Enable();
                 yield break;
             }

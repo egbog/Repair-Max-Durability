@@ -31,7 +31,7 @@ public class ResponseHandler {
 
             // delete repair kit at 0 resource or below
             if (repairKitComponent.Resource <= 0) {
-                var traderControllerClass = (TraderControllerClass)repairKit.Parent.GetOwner();
+                var traderControllerClass = (ItemController)repairKit.Parent.GetOwner();
                 traderControllerClass.ThrowItem(repairKit);
                 //Plugin.Log.LogDebug("DESTROYED REPAIR KIT");
             }

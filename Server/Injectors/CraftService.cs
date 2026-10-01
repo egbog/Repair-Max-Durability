@@ -1,18 +1,18 @@
 using _RepairMaxDurability.Logger;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Hideout;
 using SPTarkov.Server.Core.Models.Enums.Hideout;
-using SPTarkov.Server.Core.Models.Spt.Hideout;
-using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 
 namespace _RepairMaxDurability.Injectors;
 
-[Injectable(TypePriority = OnLoadOrder.PostDBModLoader + 1)]
+[Injectable(TypePriority = OnLoadOrder.Preload)]
 public class CraftService(
-    DatabaseService          db,
+    HideoutTable             hideout,
     GetConfig                config,
     ISptLogger<CraftService> logger,
     DebugLoggerUtil          debugLoggerUtil) {
@@ -38,7 +38,6 @@ public class CraftService(
         var count        = 0;
         var injectResult = "";
 
-        Hideout hideout = db.GetHideout();
         if (hideout.Production.Recipes == null) {
             throw new Exception("Unable to find hideout recipes. Profile may be corrupt.");
         }

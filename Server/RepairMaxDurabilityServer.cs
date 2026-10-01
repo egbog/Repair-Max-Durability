@@ -29,7 +29,7 @@ public record ModMetadata : IModMetadata {
 public class RepairMaxDurability(
     ISptLogger<RepairMaxDurability> logger,
 	CustomItemService               customItem,
-    GetConfig                       config,
+	Config                          config,
     AssortService                   assortService,
     CraftService                    craftService) : IOnLoad {
     public static          bool        Debug;

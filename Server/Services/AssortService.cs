@@ -14,8 +14,8 @@ namespace _RepairMaxDurability.Services;
 [Injectable(TypePriority = OnLoadOrder.Preload)]
 public class AssortService(
     TemplateTable             templateTable,
-    TradersTable tradersTable,
-    GetConfig                 config,
+    TradersTable              tradersTable,
+	Config                    config,
     ISptLogger<AssortService> logger,
     DebugLoggerUtil           debugLoggerUtil) {
     public void AddAssort(MongoId itemId, MongoId assortId) {

@@ -3,7 +3,6 @@ using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Common;
-using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Hideout;
 using SPTarkov.Server.Core.Models.Enums.Hideout;
 using SPTarkov.Server.Core.Models.Spt.Tables;
@@ -13,7 +12,7 @@ namespace _RepairMaxDurability.Injectors;
 [Injectable(TypePriority = OnLoadOrder.Preload)]
 public class CraftService(
     HideoutTable             hideout,
-    GetConfig                config,
+	Config                   config,
     ISptLogger<CraftService> logger,
     DebugLoggerUtil          debugLoggerUtil) {
     private static HideoutProduction CreateCraft(string itemId,         string craftId, List<Requirement> requirements,

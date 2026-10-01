@@ -11,7 +11,7 @@ using SPTarkov.Server.Core.Services.Commerce;
 namespace _RepairMaxDurability.Services;
 
 [Injectable]
-public class RepairMaxService(TemplateTable tb, RepairHelper repairHelper, ISptLogger<RepairMaxService> logger) {
+public class RepairMaxService(TemplateTable templateTable, RepairHelper repairHelper, ISptLogger<RepairMaxService> logger) {
     public (RepairDetails repairDetails, Item repairKit) RepairMaxItemByKit(
         RepairDataRequest dataRequest, MongoId sessionId, PmcData pmcData) {
         Item itemToRepair = pmcData.Inventory?.Items?.FirstOrDefault(x => x.Id == dataRequest.ItemId) ??
@@ -20,7 +20,7 @@ public class RepairMaxService(TemplateTable tb, RepairHelper repairHelper, ISptL
         Item repairKit = pmcData.Inventory?.Items?.FirstOrDefault(x => x.Id == dataRequest.KitId) ??
                          throw new Exception($"Repair kit {dataRequest.KitId} not found in inventory.");
 
-        Dictionary<MongoId, TemplateItem> itemsDict             = tb.Items;
+        Dictionary<MongoId, TemplateItem> itemsDict             = templateTable.Items;
         TemplateItem                      itemToRepairTemplate  = itemsDict[itemToRepair.Template];
         TemplateItem                      repairKitTemplateItem = itemsDict[repairKit.Template];
 

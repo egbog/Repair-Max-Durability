@@ -1,30 +1,82 @@
-using System.Reflection;
-using SPTarkov.DI.Annotations;
-using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Eft.Hideout;
+using System.Reflection;
+using System.Text.Json;
 
 namespace _RepairMaxDurability.Injectors;
 
-[Injectable(InjectionType.Singleton)]
-public class GetConfig(ModHelper modHelper) {
-    // Optionally expose the full config if needed
-    private Config Config { get; } =
-        modHelper.GetJsonDataFromFile<Config>(modHelper.GetAbsolutePathToModFolder(Assembly.GetExecutingAssembly()) +
-                                              "/config", "config.json");
-    // Forwarded properties
-    public bool               Debug             { get => Config.Debug; }
-    public int                FleaPrice         { get => Config.FleaPrice; }
-    public int                MaxRepairResource { get => Config.MaxRepairResource; }
-    public List<TraderStruct> Traders           { get => Config.Traders; }
-    public List<CraftStruct>  Crafts            { get => Config.Crafts; }
+public class ConfigReg : IOnDIConstruct {
+    public static async Task OnDIConstructAsync(IServiceCollection serviceCollection,
+                                                CancellationToken  cancellationToken) {
+        Config config = await LoadConfigFromDiskAsync(cancellationToken);
+        serviceCollection.AddSingleton(config);
+    }
+
+    // stolen from mod examples github
+    private static async Task<Config> LoadConfigFromDiskAsync(CancellationToken ct) {
+        string configPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ??
+                                         throw new InvalidOperationException(), "config.json");
+
+        if (!File.Exists(configPath)) {
+            var defaultConfig = new Config();
+            // TODO: write save config method
+            //await SaveConfigToDiskAsync(defaultConfig, configPath, ct);
+            return defaultConfig;
+        }
+
+        await using FileStream stream = File.OpenRead(configPath);
+
+        // TODO: fix this formatting in r#
+        Config? config =
+            await JsonSerializer.DeserializeAsync<Config>(stream,
+                                                          new JsonSerializerOptions {
+                                                              PropertyNameCaseInsensitive = true
+                                                          }, ct);
+
+        return config ?? new Config();
+    }
 }
 
 public record Config {
-    public required bool               Debug             { get; init; }
-    public required int                FleaPrice         { get; init; }
-    public required int                MaxRepairResource { get; init; }
-    public required List<TraderStruct> Traders           { get; init; }
-    public required List<CraftStruct>  Crafts            { get; init; }
+    public bool Debug     { get; init; } = false;
+    public int  FleaPrice { get; init; } = 100000;
+
+    public int MaxRepairResource { get;      init; } = 5;
+    public List<TraderStruct> Traders { get; init; } = [
+        new() {
+            Name         = "Mechanic",
+            Enabled      = true,
+            Price        = 100000,
+            LoyaltyLevel = 2,
+            BuyLimit     = 5,
+            Stock        = 5
+        },
+        new() {
+            Name         = "Prapor",
+            Enabled      = false,
+            Price        = 100000,
+            LoyaltyLevel = 1,
+            BuyLimit     = 50,
+            Stock        = 2000
+        }
+    ];
+    public List<CraftStruct> Crafts { get; init; } = [
+        new() {
+            Enabled       = true,
+            CraftTime     = 3600,
+            AmountCrafted = 1,
+            Requirements = [
+                new Requirement { Type = "Tool", TemplateId = "590c2e1186f77425357b6124" },
+                new Requirement {
+                    Type = "Item", TemplateId = "5bc9b355d4351e6d1509862a", IsFunctional = false, Count = 1
+                },
+                new Requirement {
+                    Type = "Item", TemplateId = "5d1c819a86f774771b0acd6c", IsFunctional = false, Count = 1
+                },
+                new Requirement { Type = "Area", AreaType = 10, RequiredLevel = 1 }
+            ]
+        }
+    ];
 }
 
 public record TraderStruct {

@@ -88,12 +88,12 @@ public class RepairMaxDurabilityPatch : ModulePatch {
         try {
             // get data back from server
             JsonResponse<ItemEventData>? response =
-                RequestHandler
-                    .SendRequest<JsonResponse<ItemEventData>?>("/client/game/profile/items/moving",
-                                                               request);
+                RequestHandler.SendRequest<JsonResponse<ItemEventData>?>("/client/game/profile/items/moving", request);
 
+            // aggregate any warnings and throw exception
             if (response?.data.Warnings?.Count > 0) {
-                throw new Exception($"Error: {response.data.Warnings[0].ErrorMessage}");
+                throw new Exception(string.Join(Environment.NewLine,
+                                                response.data.Warnings.Select(w => w.ErrorMessage)));
             }
 
             // there's exactly one profileChanges entry (your session)

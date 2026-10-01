@@ -4,7 +4,7 @@ using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
-using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Commerce;
 
 namespace _RepairMaxDurability.Controllers;
 
@@ -12,7 +12,7 @@ namespace _RepairMaxDurability.Controllers;
 public class RepairMaxController(
     RepairMaxService repairMaxService,
     RepairService    repairService) {
-    public List<Item?> RepairMaxWithKit(RepairDataRequest dataRequest, MongoId sessionId, PmcData pmcData) {
+    public async Task<List<Item?>> RepairMaxWithKit(RepairDataRequest dataRequest, MongoId sessionId, PmcData pmcData) {
         if (pmcData is null) {
             throw new Exception($"pmcData not found for id: {sessionId}. Aborting repair.");
         }
@@ -25,6 +25,6 @@ public class RepairMaxController(
         // Add skill points for repairing items
         repairService.AddRepairSkillPoints(sessionId, repairDetails, pmcData);
 
-        return [repairDetails.RepairedItem, repairKit];
+        return await Task.FromResult(new List<Item?> { repairDetails.RepairedItem, repairKit });
     }
 }

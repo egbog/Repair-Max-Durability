@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace _RepairMaxDurability.Injectors;
 
-public class ConfigReg : IOnDIConstruct {
+public class ConfigRegistration : IOnDIConstruct {
     public static async Task OnDIConstructAsync(IServiceCollection serviceCollection,
                                                 CancellationToken  cancellationToken) {
         Config config = await LoadConfigFromDiskAsync(cancellationToken);

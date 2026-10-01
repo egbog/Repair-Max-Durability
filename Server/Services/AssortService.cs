@@ -1,19 +1,20 @@
 using _RepairMaxDurability.Helpers;
 using _RepairMaxDurability.Injectors;
 using _RepairMaxDurability.Logger;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
-using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 
 namespace _RepairMaxDurability.Services;
 
-[Injectable(TypePriority = OnLoadOrder.PostDBModLoader + 1)]
+[Injectable(TypePriority = OnLoadOrder.Preload)]
 public class AssortService(
-    DatabaseService           db,
+    TemplateTable             templateTable,
+    TradersTable tradersTable,
     GetConfig                 config,
     ISptLogger<AssortService> logger,
     DebugLoggerUtil           debugLoggerUtil) {
@@ -22,12 +23,11 @@ public class AssortService(
         var injectResult = "";
 
         // cache in case we have to accomodate a large number of traders
-        Dictionary<MongoId, TemplateItem> itemsDict = db.GetItems();
-        Dictionary<MongoId, Trader>       traders   = db.GetTraders();
+        Dictionary<MongoId, TemplateItem> itemsDict = templateTable.Items;
 
         foreach (TraderStruct assortConfig in config.Traders.Where(assortConfig => assortConfig.Enabled)) {
             // fetch trader
-            (MongoId traderId, Trader trader) = traders.FirstOrDefault(x => x.Value.Base.Nickname == assortConfig.Name);
+            (MongoId traderId, Trader trader) = tradersTable.FirstOrDefault(x => x.Value.Base.Nickname == assortConfig.Name);
             if (trader == null) {
                 throw new
                     Exception($"Trader '{assortConfig.Name}' not found. Ensure trader's name is correct in config file.");
@@ -58,13 +58,12 @@ public class AssortService(
     }
 
     protected TraderAssort GetTraderAssortRef(MongoId traderId) {
-        Dictionary<MongoId, Trader> tradersDict = db.GetTraders();
-        if (tradersDict == null) {
+        if (tradersTable == null) {
             throw new
                 Exception("Traders not loaded properly. Check for any corrupt modded traders and restart server.");
         }
 
-        if (!tradersDict.TryGetValue(traderId, out Trader? trader)) {
+        if (!tradersTable.TryGetValue(traderId, out Trader? trader)) {
             throw new Exception($"Trader {traderId} not found.");
         }
 

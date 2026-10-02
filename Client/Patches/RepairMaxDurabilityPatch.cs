@@ -40,8 +40,7 @@ public class RepairMaxDurabilityPatch : ModulePatch {
 
         // make sure the item being dragged is the repair kit
         // only repair Weapon types
-        if (dragItemContext.Item.TemplateId                   != Plugin.KitId ||
-            ItemViewFactory.GetItemType(targetItem.GetType()) != EItemType.Weapon) {
+        if (dragItemContext.Item.TemplateId != Plugin.KitId || ItemViewFactory.GetItemType(targetItem.GetType()) != EItemType.Weapon) {
             return true;
         }
 
@@ -91,8 +90,7 @@ public class RepairMaxDurabilityPatch : ModulePatch {
 
             // aggregate any warnings and throw exception
             if (response?.data.Warnings?.Count > 0) {
-                throw new Exception(string.Join(Environment.NewLine,
-                                                response.data.Warnings.Select(w => w.ErrorMessage)));
+                throw new Exception(string.Join(Environment.NewLine, response.data.Warnings.Select(w => w.ErrorMessage)));
             }
 
             // there's exactly one profileChanges entry (your session)

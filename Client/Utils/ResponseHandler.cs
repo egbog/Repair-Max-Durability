@@ -7,8 +7,7 @@ using EFT.InventoryLogic;
 namespace _RepairMaxDurability.Utils;
 
 public class ResponseHandler {
-    public static void UpdateValues(List<Items>? changed, RepairableComponent targetItemRc,
-                                    Item         repairKit) {
+    public static void UpdateValues(List<Items>? changed, RepairableComponent targetItemRc, Item repairKit) {
         if (changed?.Find(i => i.Id == targetItemRc.Item.Id) is { } item) {
             targetItemRc.Durability    = item.Upd.Repairable.Durability;
             targetItemRc.MaxDurability = item.Upd.Repairable.MaxDurability;

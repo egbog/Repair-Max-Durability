@@ -6,8 +6,7 @@ using System.Text.Json;
 namespace _RepairMaxDurability.Injectors;
 
 public class ConfigRegistration : IOnDIConstruct {
-    public static async Task OnDIConstructAsync(IServiceCollection serviceCollection,
-                                                CancellationToken  cancellationToken) {
+    public static async Task OnDIConstructAsync(IServiceCollection serviceCollection, CancellationToken cancellationToken) {
         Config config = await LoadConfigFromDiskAsync(cancellationToken);
         serviceCollection.AddSingleton(config);
     }
@@ -15,7 +14,8 @@ public class ConfigRegistration : IOnDIConstruct {
     // stolen from mod examples github
     private static async Task<Config> LoadConfigFromDiskAsync(CancellationToken ct) {
         string configPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ??
-                                         throw new InvalidOperationException(), "config.json");
+                                         throw new InvalidOperationException(),
+                                         "config.json");
 
         if (!File.Exists(configPath)) {
             var defaultConfig = new Config();
@@ -27,11 +27,9 @@ public class ConfigRegistration : IOnDIConstruct {
         await using FileStream stream = File.OpenRead(configPath);
 
         // TODO: fix this formatting in r#
-        Config? config =
-            await JsonSerializer.DeserializeAsync<Config>(stream,
-                                                          new JsonSerializerOptions {
-                                                              PropertyNameCaseInsensitive = true
-                                                          }, ct);
+        Config? config = await JsonSerializer.DeserializeAsync<Config>(stream,
+                                                                       new JsonSerializerOptions { PropertyNameCaseInsensitive = true },
+                                                                       ct);
 
         return config ?? new Config();
     }
@@ -67,13 +65,9 @@ public record Config {
             AmountCrafted = 1,
             Requirements = [
                 new Requirement { Type = "Tool", TemplateId = "590c2e1186f77425357b6124" },
-                new Requirement {
-                    Type = "Item", TemplateId = "5bc9b355d4351e6d1509862a", IsFunctional = false, Count = 1
-                },
-                new Requirement {
-                    Type = "Item", TemplateId = "5d1c819a86f774771b0acd6c", IsFunctional = false, Count = 1
-                },
-                new Requirement { Type = "Area", AreaType = 10, RequiredLevel = 1 }
+                new Requirement { Type = "Item", TemplateId = "5bc9b355d4351e6d1509862a", IsFunctional = false, Count = 1 },
+                new Requirement { Type = "Item", TemplateId = "5d1c819a86f774771b0acd6c", IsFunctional = false, Count = 1 },
+                new Requirement { Type = "Area", AreaType   = 10, RequiredLevel                        = 1 }
             ]
         }
     ];

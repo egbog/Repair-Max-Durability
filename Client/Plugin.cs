@@ -20,8 +20,8 @@ namespace _RepairMaxDurability;
 [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
 [BepInProcess("EscapeFromTarkov.exe")]
 public class Plugin : BaseUnityPlugin {
-    public static readonly ManualLogSource Log = BepInEx.Logging.Logger.CreateLogSource("RepairMaxDurability");
-    public static readonly MongoID KitId = "86afd148ac929e6eddc5e370";
+    public static readonly ManualLogSource Log   = BepInEx.Logging.Logger.CreateLogSource("RepairMaxDurability");
+    public static readonly MongoID         KitId = "86afd148ac929e6eddc5e370";
 
     private void Awake() {
         // Plugin startup logic

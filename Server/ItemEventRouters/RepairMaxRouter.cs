@@ -13,14 +13,15 @@ namespace _RepairMaxDurability.ItemEventRouters;
 public sealed class RepairMaxRouter(RepairMaxController repairMaxController) : ItemEventRouter([
     new ItemRouteAction<RepairDataRequest>("MaxDuraRepair",
                                            async (url, pmcData, body, sessionID, output, cancellationToken) => {
-											   List<Item?> items = await repairMaxController.RepairMaxWithKit(body, sessionID,
-                                                                                                              pmcData);
-                                               foreach (Item item in items.OfType<Item>())
+                                               List<Item?> items =
+                                                   await repairMaxController.RepairMaxWithKit(body, sessionID, pmcData);
+                                               foreach (Item item in items.OfType<Item>()) {
                                                    output.ProfileChanges[sessionID].Items?.ChangedItems?.Add(item);
+                                               }
+
                                                return output; // adjust type to match expected return
                                            })
 ]);
-
 
 public record RepairDataRequest : BaseInteractionRequestData {
     [JsonPropertyName("item")]

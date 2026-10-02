@@ -12,8 +12,8 @@ namespace _RepairMaxDurability.Services;
 
 [Injectable]
 public class RepairMaxService(TemplateTable templateTable, RepairHelper repairHelper, ISptLogger<RepairMaxService> logger) {
-    public (RepairDetails repairDetails, Item repairKit) RepairMaxItemByKit(
-        RepairDataRequest dataRequest, MongoId sessionId, PmcData pmcData) {
+    public (RepairDetails repairDetails, Item repairKit) RepairMaxItemByKit(RepairDataRequest dataRequest, MongoId sessionId,
+                                                                            PmcData           pmcData) {
         Item itemToRepair = pmcData.Inventory?.Items?.FirstOrDefault(x => x.Id == dataRequest.ItemId) ??
                             throw new Exception($"Item {dataRequest.ItemId} not found in inventory.");
 

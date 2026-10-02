@@ -15,7 +15,7 @@ namespace _RepairMaxDurability.Services;
 public class AssortService(
     TemplateTable             templateTable,
     TradersTable              tradersTable,
-	Config                    config,
+    Config                    config,
     ISptLogger<AssortService> logger,
     DebugLoggerUtil           debugLoggerUtil) {
     public void AddAssort(MongoId itemId, MongoId assortId) {
@@ -29,8 +29,7 @@ public class AssortService(
             // fetch trader
             (MongoId traderId, Trader trader) = tradersTable.FirstOrDefault(x => x.Value.Base.Nickname == assortConfig.Name);
             if (trader == null) {
-                throw new
-                    Exception($"Trader '{assortConfig.Name}' not found. Ensure trader's name is correct in config file.");
+                throw new Exception($"Trader '{assortConfig.Name}' not found. Ensure trader's name is correct in config file.");
             }
 
             CurrencyType currency = AssortHelperExtensions.GetTraderCurrencyType(trader);
@@ -59,8 +58,7 @@ public class AssortService(
 
     protected TraderAssort GetTraderAssortRef(MongoId traderId) {
         if (tradersTable == null) {
-            throw new
-                Exception("Traders not loaded properly. Check for any corrupt modded traders and restart server.");
+            throw new Exception("Traders not loaded properly. Check for any corrupt modded traders and restart server.");
         }
 
         if (!tradersTable.TryGetValue(traderId, out Trader? trader)) {

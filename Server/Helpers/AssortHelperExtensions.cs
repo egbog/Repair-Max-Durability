@@ -14,16 +14,16 @@ public static class AssortHelperExtensions {
     }
 
     public static CurrencyType GetTraderCurrencyType(Trader trader) {
+        // TODO: useless exception
         if (trader.Base.Currency == null) {
-            throw new
-                Exception($"Trader '{trader.Base.Nickname}' has no assigned currency. Are you using a modded trader?");
+            throw new Exception($"Trader '{trader.Base.Nickname}' has no assigned currency. Are you using a modded trader?");
         }
 
         return (CurrencyType)trader.Base.Currency;
     }
 
-    public static ItemAssort CreateAssort(MongoId      itemId,       MongoId      assortId, CurrencyType currencyType,
-                                          TraderStruct assortConfig, TemplateItem templateitem) {
+    public static ItemAssort CreateAssort(MongoId      itemId, MongoId assortId, CurrencyType currencyType, TraderStruct assortConfig,
+                                          TemplateItem templateitem) {
         return new ItemAssort {
             AssortItem = new Item {
                 Id       = assortId,
@@ -37,9 +37,7 @@ public static class AssortHelperExtensions {
                     RepairKit             = new UpdRepairKit { Resource = templateitem.Properties?.MaxRepairResource }
                 }
             },
-            BarterScheme = [
-                [new BarterScheme { Count = assortConfig.Price, Template = currencyType.GetCurrencyTpl() }]
-            ],
+            BarterScheme = [[new BarterScheme { Count = assortConfig.Price, Template = currencyType.GetCurrencyTpl() }]],
             LoyaltyLevel = assortConfig.LoyaltyLevel
         };
     }

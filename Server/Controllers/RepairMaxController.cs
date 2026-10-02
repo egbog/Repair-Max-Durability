@@ -9,16 +9,13 @@ using SPTarkov.Server.Core.Services.Commerce;
 namespace _RepairMaxDurability.Controllers;
 
 [Injectable]
-public class RepairMaxController(
-    RepairMaxService repairMaxService,
-    RepairService    repairService) {
+public class RepairMaxController(RepairMaxService repairMaxService, RepairService repairService) {
     public async Task<List<Item?>> RepairMaxWithKit(RepairDataRequest dataRequest, MongoId sessionId, PmcData pmcData) {
         if (pmcData is null) {
             throw new Exception($"pmcData not found for id: {sessionId}. Aborting repair.");
         }
 
-        (RepairDetails repairDetails, Item repairKit) =
-            repairMaxService.RepairMaxItemByKit(dataRequest, sessionId, pmcData);
+        (RepairDetails repairDetails, Item repairKit) = repairMaxService.RepairMaxItemByKit(dataRequest, sessionId, pmcData);
 
         repairService.AddBuffToItem(repairDetails, pmcData);
 

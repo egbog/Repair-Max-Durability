@@ -10,13 +10,9 @@ using SPTarkov.Server.Core.Models.Spt.Tables;
 namespace _RepairMaxDurability.Injectors;
 
 [Injectable(TypePriority = OnLoadOrder.Preload)]
-public class CraftService(
-    HideoutTable             hideout,
-	Config                   config,
-    ISptLogger<CraftService> logger,
-    DebugLoggerUtil          debugLoggerUtil) {
-    private static HideoutProduction CreateCraft(string itemId,         string craftId, List<Requirement> requirements,
-                                                 int    productionTime, int    count) {
+public class CraftService(HideoutTable hideout, Config config, ISptLogger<CraftService> logger, DebugLoggerUtil debugLoggerUtil) {
+    private static HideoutProduction CreateCraft(string itemId, string craftId, List<Requirement> requirements, int productionTime,
+                                                 int    count) {
         return new HideoutProduction {
             Id                           = craftId,
             EndProduct                   = itemId,
@@ -42,8 +38,7 @@ public class CraftService(
         }
 
         foreach (CraftStruct craft in config.Crafts.Where(x => x.Enabled)) {
-            HideoutProduction productionItem = CreateCraft(itemId, craftId, craft.Requirements, craft.CraftTime,
-                                                           craft.AmountCrafted);
+            HideoutProduction productionItem = CreateCraft(itemId, craftId, craft.Requirements, craft.CraftTime, craft.AmountCrafted);
 
             hideout.Production.Recipes.Add(productionItem);
 

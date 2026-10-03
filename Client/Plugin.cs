@@ -17,7 +17,7 @@ using UnityEngine;
 
 namespace _RepairMaxDurability;
 
-[BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
+[BepInPlugin("com.egbog.repairmaxdurability", PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
 [BepInProcess("EscapeFromTarkov.exe")]
 public class Plugin : BaseUnityPlugin {
     public static readonly ManualLogSource Log   = BepInEx.Logging.Logger.CreateLogSource("RepairMaxDurability");

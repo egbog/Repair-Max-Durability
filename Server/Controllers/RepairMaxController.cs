@@ -4,16 +4,16 @@ using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
+using SPTarkov.Server.Core.Models.Eft.ItemEvent;
+using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Services.Commerce;
 
 namespace _RepairMaxDurability.Controllers;
 
 [Injectable]
-public class RepairMaxController(RepairMaxService repairMaxService, RepairService repairService) {
-    public Task<List<Item?>> RepairMaxWithKit(RepairDataRequest dataRequest, MongoId sessionId, PmcData pmcData) {
-        if (pmcData is null) {
-            throw new Exception($"pmcData not found for id: {sessionId}. Aborting repair.");
-        }
+public class RepairMaxController(EventOutputHolder eventOutputHolder, RepairMaxService repairMaxService, RepairService repairService) {
+    public ItemEventRouterResponse RepairMaxWithKit(RepairDataRequest dataRequest, MongoId sessionId, PmcData pmcData) {
+        ItemEventRouterResponse output = eventOutputHolder.GetOutput(sessionId);
 
         (RepairDetails repairDetails, Item repairKit) = repairMaxService.RepairMaxItemByKit(dataRequest, sessionId, pmcData);
 
@@ -21,7 +21,10 @@ public class RepairMaxController(RepairMaxService repairMaxService, RepairServic
 
         // Add skill points for repairing items
         repairService.AddRepairSkillPoints(sessionId, repairDetails, pmcData);
+        
+        output.ProfileChanges[sessionId].Items.ChangedItems.Add(repairDetails.RepairedItem);
+        output.ProfileChanges[sessionId].Items.ChangedItems.Add(repairKit);
 
-        return Task.FromResult(new List<Item?> { repairDetails.RepairedItem, repairKit });
+        return output;
     }
 }

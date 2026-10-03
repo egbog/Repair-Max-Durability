@@ -27,17 +27,19 @@ public class AssortService(
 
         foreach (TraderStruct assortConfig in config.Traders.Where(assortConfig => assortConfig.Enabled)) {
             // fetch trader
-            (MongoId traderId, Trader trader) = tradersTable.FirstOrDefault(x => x.Value.Base.Nickname == assortConfig.Name);
-            if (trader == null) {
+            KeyValuePair<MongoId, Trader> traderEntry = tradersTable.FirstOrDefault(x => x.Value.Base.Nickname == assortConfig.Name);
+            
+            // TODO: we should do a config verification when starting server and avoid this exception
+            if (traderEntry.Value == null) {
                 throw new Exception($"Trader '{assortConfig.Name}' not found. Ensure trader's name is correct in config file.");
             }
 
-            CurrencyType currency = AssortHelperExtensions.GetTraderCurrencyType(trader);
+            CurrencyType currency = AssortHelperExtensions.GetTraderCurrencyType(traderEntry.Value);
 
             AssortHelperExtensions.ItemAssort itemAssort =
                 AssortHelperExtensions.CreateAssort(itemId, assortId, currency, assortConfig, itemsDict[itemId]);
 
-            TraderAssort traderAssort = GetTraderAssortRef(traderId);
+            TraderAssort traderAssort = GetTraderAssortRef(traderEntry.Key);
 
             AddItemAssort(itemAssort, traderAssort);
 

@@ -1,4 +1,5 @@
-﻿using EFT.UI;
+﻿using System;
+using EFT.UI;
 using SPT.Reflection.Patching;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,8 @@ namespace _RepairMaxDurability.Patches;
 
 public class ShowRepairWindowPatch : ModulePatch {
     protected override MethodBase GetTargetMethod() {
-        return typeof(RepairController).GetMethod("GetSuitableRepairersCollections", BindingFlags.Instance | BindingFlags.Public);
+        return typeof(RepairController).GetMethod("GetSuitableRepairersCollections", BindingFlags.Instance | BindingFlags.Public, null,
+                                                  [typeof(Item)], null);
     }
 
     [PatchPostfix]
@@ -22,7 +24,7 @@ public class ShowRepairWindowPatch : ModulePatch {
 
 public class RepairerParametersPanelRefreshPatch : ModulePatch {
     protected override MethodBase GetTargetMethod() {
-        return typeof(RepairerParametersPanel).GetMethod("method_0", BindingFlags.Instance | BindingFlags.Public);
+        return typeof(RepairerParametersPanel).GetMethod("AddRepairKit", BindingFlags.Instance | BindingFlags.Public);
     }
 
     [PatchPrefix]

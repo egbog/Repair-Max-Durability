@@ -19,7 +19,7 @@ namespace _RepairMaxDurability.Patches;
 
 public class RepairMaxDurabilityPatch : ModulePatch {
     protected override MethodBase GetTargetMethod() {
-        return typeof(ItemView).GetMethod("method_8", BindingFlags.Instance | BindingFlags.Public)!;
+        return typeof(ItemView).GetMethod("ProcessItem", BindingFlags.Instance | BindingFlags.Public)!;
     }
 
     [PatchPrefix]

@@ -36,7 +36,7 @@
   
   <!-- Allow go to declaration using project source instead of decompiled source -->
   <ItemGroup Condition="'$(Configuration)'=='Source-Debug'">
-    <ProjectReference Include="..\..\Decompiled-SPT4.0.0\Assembly-CSharp\Assembly-CSharp.csproj" />
+    <ProjectReference Include="..\..\Decompiled-SPT4.1.16\Assembly-CSharp\Assembly-CSharp.csproj" />
   </ItemGroup>
   
   <ItemGroup Condition="'$(Configuration)'!='Source-Debug'">

@@ -6,6 +6,9 @@ Server/user/
 dist/
 release-package.bat
 
+## ignore dependency dlls
+Client/dependencies
+
 # User-specific files
 *.rsuser
 *.suo

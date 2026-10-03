@@ -10,7 +10,7 @@ namespace _RepairMaxDurability.Controllers;
 
 [Injectable]
 public class RepairMaxController(RepairMaxService repairMaxService, RepairService repairService) {
-    public async Task<List<Item?>> RepairMaxWithKit(RepairDataRequest dataRequest, MongoId sessionId, PmcData pmcData) {
+    public Task<List<Item?>> RepairMaxWithKit(RepairDataRequest dataRequest, MongoId sessionId, PmcData pmcData) {
         if (pmcData is null) {
             throw new Exception($"pmcData not found for id: {sessionId}. Aborting repair.");
         }
@@ -22,6 +22,6 @@ public class RepairMaxController(RepairMaxService repairMaxService, RepairServic
         // Add skill points for repairing items
         repairService.AddRepairSkillPoints(sessionId, repairDetails, pmcData);
 
-        return await Task.FromResult(new List<Item?> { repairDetails.RepairedItem, repairKit });
+        return Task.FromResult(new List<Item?> { repairDetails.RepairedItem, repairKit });
     }
 }

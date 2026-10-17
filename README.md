@@ -78,7 +78,7 @@ The default config only has one craft defined. ``Tool`` is an optional item that
 ```
 
 ## Known Issues
-None so far
+Potential issues with mods that allow use of multiple stashes (Vagabond, Traveller etc.)
 
 ## Compatibility 
-Compatible with SPT 4.0.0
+Compatible with SPT 4.1.x

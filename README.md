@@ -1,4 +1,4 @@
-This repo is a mod for [sp-tarkov](https://sp-tarkov.com/)
+This repo is a mod for [sp-tushonka](https://sp-mod.com/)
 
 # Repair Max Durability
 

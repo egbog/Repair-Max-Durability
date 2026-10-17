@@ -6,7 +6,7 @@ Durability burn upon repair is a neglected feature in live EFT that only serves 
 
 This mod attempts to introduce a lore-friendly alternative to stripping attachments off of uselessly damaged weapons and vendoring the weapon, only to purchase the exact same weapon and put the same attachments on.
 
-The simplest solution is to use the existing framework for weapon repairs and allow the repair to target the maximum durability instead. Lore-wise, a repair kit containing those crtical components that are then swapped out on the chosen weapon makes perfect sense and almost should be implemented in live EFT itself, albeit in a different fashion.
+The simplest solution is to use the existing framework for weapon repairs and allow the repair to target the maximum durability instead. Lore-wise, a repair kit containing those crtical components that are then swapped out on the chosen weapon makes perfect sense.
 
 ## Obtaining
 Spare Firearm Parts can be crafted at Workbench lvl 1 using a Toolset (keep), 1 #FireKlean gun lube and 1 Weapon Parts.

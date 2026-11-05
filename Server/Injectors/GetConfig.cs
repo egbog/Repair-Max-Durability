@@ -2,6 +2,7 @@ using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Eft.Hideout;
 using System.Reflection;
 using System.Text.Json;
+using SPTarkov.Server.Core.Utils.Json.Converters;
 
 namespace _RepairMaxDurability.Injectors;
 
@@ -15,6 +16,7 @@ public class ConfigRegistration : IOnDIConstruct {
     private static async Task<Config> LoadConfigFromDiskAsync(CancellationToken ct) {
         string configPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ??
                                          throw new InvalidOperationException(),
+                                         "config",
                                          "config.json");
 
         if (!File.Exists(configPath)) {
@@ -28,9 +30,11 @@ public class ConfigRegistration : IOnDIConstruct {
 
         // TODO: fix this formatting in r#
         Config? config = await JsonSerializer.DeserializeAsync<Config>(stream,
-                                                                       new JsonSerializerOptions { PropertyNameCaseInsensitive = true },
+                                                                       new JsonSerializerOptions {
+                                                                           PropertyNameCaseInsensitive = true,
+                                                                           Converters                  = { new StringToMongoIdConverter() }
+                                                                       },
                                                                        ct);
-
         return config ?? new Config();
     }
 }
